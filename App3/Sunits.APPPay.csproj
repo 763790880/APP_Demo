@@ -39,11 +39,12 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <MandroidI18n />
     <AndroidUseAapt2>false</AndroidUseAapt2>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -57,6 +58,7 @@
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,6 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseActivity.cs" />
+    <Compile Include="Comment\SysComment.cs" />
+    <Compile Include="LKLModel\AidlMerListener.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Model\Receipt.cs" />
     <Compile Include="Model\ReceiptInfo.cs" />
@@ -76,8 +80,9 @@
     <Compile Include="Model\SalesOrderInfo.cs" />
     <Compile Include="Model\TokenInfo.cs" />
     <Compile Include="Model\Users.cs" />
-    <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="View1.cs" />
     <Compile Include="WebApi\HttpApi.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +214,7 @@
     <AndroidResource Include="Resources\drawable\rootblock_icon_set_selected.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Comment\" />
+    <Folder Include="ActivityFun\" />
     <Folder Include="lib\" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +242,18 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\tubiao.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JarBind\JarBind.csproj">
+      <Project>{dc070ecf-1ae8-44cf-bb09-921403e878a7}</Project>
+      <Name>JarBind</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\123.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <TransformFile Include="Resources\layout\Share.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

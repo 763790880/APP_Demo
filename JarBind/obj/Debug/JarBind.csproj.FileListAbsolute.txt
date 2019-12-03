@@ -1,0 +1,4 @@
+C:\Users\Sunits\Desktop\第一个app\JarBind\bin\Debug\JarBind.dll
+C:\Users\Sunits\Desktop\第一个app\JarBind\bin\Debug\JarBind.pdb
+C:\Users\Sunits\Desktop\第一个app\JarBind\obj\Debug\JarBind.dll
+C:\Users\Sunits\Desktop\第一个app\JarBind\obj\Debug\JarBind.pdb

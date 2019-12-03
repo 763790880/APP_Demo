@@ -1,4 +1,0 @@
-C:\Users\Sunits\Desktop\第一个app\ClassLibrary1\bin\Debug\ClassLibrary1.dll
-C:\Users\Sunits\Desktop\第一个app\ClassLibrary1\bin\Debug\ClassLibrary1.pdb
-C:\Users\Sunits\Desktop\第一个app\ClassLibrary1\obj\Debug\ClassLibrary1.dll
-C:\Users\Sunits\Desktop\第一个app\ClassLibrary1\obj\Debug\ClassLibrary1.pdb

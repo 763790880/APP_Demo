@@ -2,6 +2,7 @@ Acr.UserDialogs
 AndHUD
 Caliburn.Micro.Platform
 FastAndroidCamera
+JarBind
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Core.Runtime
 Xamarin.Android.Arch.Lifecycle.Common

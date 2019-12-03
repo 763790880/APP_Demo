@@ -9,6 +9,7 @@ public class MonoPackageManager_Resources {
 		"Caliburn.Micro.Platform.Core.dll",
 		"Caliburn.Micro.Platform.dll",
 		"FastAndroidCamera.dll",
+		"JarBind.dll",
 		"Newtonsoft.Json.dll",
 		"RestSharp.dll",
 		"Xamarin.Android.Arch.Core.Common.dll",
@@ -55,5 +56,5 @@ public class MonoPackageManager_Resources {
 	};
 	public static String[] Dependencies = new String[]{
 	};
-	public static String ApiPackageName = null;
+	public static String ApiPackageName = "Mono.Android.Platform.ApiLevel_28";
 }

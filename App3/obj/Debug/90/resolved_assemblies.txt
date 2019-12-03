@@ -5,6 +5,7 @@ C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Caliburn.M
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Caliburn.Micro.Platform.Core.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Caliburn.Micro.Platform.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\FastAndroidCamera.dll
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\JarBind.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Java.Interop.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Mono.Android.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\mscorlib.dll

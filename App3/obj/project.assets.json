@@ -873,6 +873,16 @@
           "lib/MonoAndroid71/ZXingNetMobile.dll": {},
           "lib/MonoAndroid71/zxing.portable.dll": {}
         }
+      },
+      "JarBind/1.0.0": {
+        "type": "project",
+        "framework": "MonoAndroid,Version=v8.1",
+        "compile": {
+          "bin/placeholder/JarBind.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/JarBind.dll": {}
+        }
       }
     }
   },
@@ -1973,12 +1983,18 @@
         "zxing.net.mobile.2.4.1.nupkg.sha512",
         "zxing.net.mobile.nuspec"
       ]
+    },
+    "JarBind/1.0.0": {
+      "type": "project",
+      "path": "../JarBind/JarBind.csproj",
+      "msbuildProject": "../JarBind/JarBind.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "MonoAndroid,Version=v9.0": [
       "Acr.UserDialogs >= 7.0.35",
       "Caliburn.Micro >= 3.2.0",
+      "JarBind >= 1.0.0",
       "Newtonsoft.Json >= 12.0.2",
       "RestSharp >= 106.6.10",
       "Websockets.Pcl >= 1.1.9",
@@ -2025,7 +2041,11 @@
       },
       "frameworks": {
         "monoandroid90": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Sunits\\Desktop\\第一个app\\JarBind\\JarBind.csproj": {
+              "projectPath": "C:\\Users\\Sunits\\Desktop\\第一个app\\JarBind\\JarBind.csproj"
+            }
+          }
         }
       }
     },

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!--For all properties see: https://aka.ms/android-menu-resource-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!--Replace android:title="Share" with @string/<your name>-->
+  <item android:id="@+id/action_share"
+        android:title="Share"
+        android:showAsAction="always"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+          />
+</menu>
+
+
