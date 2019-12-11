@@ -8,6 +8,7 @@ C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\FastAndroi
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\JarBind.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Java.Interop.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Mono.Android.dll
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Mono.Android.Export.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\mscorlib.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\Newtonsoft.Json.dll
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\assets\RestSharp.dll

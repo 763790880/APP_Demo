@@ -1,7 +1,6 @@
 ﻿using Android.App;
 using Android.OS;
 using Android.Runtime;
-using Android.Widget;
 using Android.Views;
 using ZXing.Mobile;
 using Android.Content;
@@ -17,6 +16,9 @@ using System.Text;
 using System.Threading;
 using Acr.UserDialogs;
 using Android.Content.PM;
+using System.Collections.Generic;
+using Android.Widget;
+using Android.Support.V7.Widget;
 
 namespace App3
 {
@@ -25,22 +27,14 @@ namespace App3
     {
 
         #region 全局标量 
-        protected static View zxingOverlay;
-        protected static MobileBarcodeScanner scanner;
-        protected static SalesOrder _salesOrder;//当前订单
-        protected static int _orderType;//当前支付类型 1扫码 0银联
-        protected static int _orderRefundType;//当前退款类型 1扫码 2银联
-        protected static int _scanType;//当前扫描类型 1.支付  2退款 3结算
-        protected static MobileBarcodeScanningOptions mbs;
-        protected static ImageView ivScanning;
+        protected View zxingOverlay;
+        protected MobileBarcodeScanner scanner;
+        protected MobileBarcodeScanningOptions mbs;
+        protected ImageView ivScanning;
         // 从上到下的平移动画
-        protected static Animation verticalAnimation;
-        //支付金额
-        protected static decimal mhtOrderAmt;
-        //支付订单号
-        protected static string mhtOrderNo;
-        //当前单号类型：1-SO：2-RE
-        protected static string mOrderType;
+        protected Animation verticalAnimation;
+        //当前订单号集合
+        private List<string> orders=new List<string>();
         #endregion
         [Obsolete]
         protected override void OnCreate(Bundle savedInstanceState)
@@ -131,7 +125,7 @@ namespace App3
                     });
                 });
             }
-           
+
         }
         #endregion
         #region 扫描获取订单
@@ -182,6 +176,8 @@ namespace App3
                 scanner = new MobileBarcodeScanner();
                 zxingOverlay = LayoutInflater.FromContext(this).Inflate(Resource.Layout.ZxingOverlay, null);
                 scanner.UseCustomOverlay = true;
+                zxingOverlay.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
+                scanner.CustomOverlay = zxingOverlay;
                 //Button btnCancelScan = zxingOverlay.FindViewById<Button>(Resource.Id.btnCancelScan);//取消扫描
                 //btnCancelScan.Click += (s, e) =>
                 //{
@@ -199,8 +195,7 @@ namespace App3
                 //android: textColor = "#ffffffff"
                 //android: background = "#aa000000"
                 //android: gravity = "center" />
-                zxingOverlay.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
-                scanner.CustomOverlay = zxingOverlay;
+
 
 
                 mbs = MobileBarcodeScanningOptions.Default;
@@ -371,18 +366,30 @@ namespace App3
             Button btnSettlement = this.FindControl<Button>("btnSettlement");//结算
             btnSettlement.Click += (s, e) =>
             {
-                ShowActivity<View1>();
-                //CreateTXT("我是设置得值其中包含了很多得数据");
-                //_scanType = 3;//扫描类型
-                ////UserDialogs.Instance.Alert("您确认开始结算吗？","","确认");
-                //this.RunOnUi(() =>
-                //{
-                //    this.ShowAlert("您确认开始结算吗？", true, (d) =>
-                //    {
-                //        Settlement(1);
-                //    });
-                //});
+                //OpenOrder();
+                _scanType = 3;//扫描类型
+                //UserDialogs.Instance.Alert("您确认开始结算吗？","","确认");
+                this.RunOnUi(() =>
+                {
+                    this.ShowAlert("您确认开始结算吗？", true, (d) =>
+                    {
+                        Settlement(1);
+                    });
+                });
 
+            };
+            Button button2 = this.FindControl<Button>("button2");//创建销售单
+            button2.Click += (s, e) =>
+            {
+                createFloatView();
+                Task t = new Task(CreateOrderScan);
+                t.Start();
+            };
+            Button button1 = this.FindControl<Button>("button1");//设置
+            button1.Click += (s, e) =>
+            {
+                createFloatView();
+                ShowActivity<SetUpTheActivity>();
             };
         }
         /// <summary>
@@ -421,6 +428,7 @@ namespace App3
                 else
                 {
                     Close();//关闭进程杀死
+                    return true;
                 }
             }
             return base.OnKeyDown(keyCode, e);
@@ -536,649 +544,218 @@ namespace App3
 
         }
         #endregion
-        #region 退款
-        /// <summary>
-        /// 退款
-        /// </summary>
-        /// <param name="salesOrder"></param>
-        public void Refund(SalesOrder salesOrder)
+        #region 创建订单
+        private List<SalesOrderDetails> OrderDetails = new List<SalesOrderDetails>();
+        private MobileBarcodeScanner scanorder;
+        public void CreateOrderScan()
         {
             try
             {
-                SendLog("开始退款订单号：" + salesOrder.SubSaleNo + "&时间=" + DateTime.Now.ToString());
-                if (_orderRefundType != 2 && _orderRefundType != 1)
+                var ORjson = ReadTXT();
+                var OR = JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
+                if (string.IsNullOrWhiteSpace(OR.GroupCode) || string.IsNullOrWhiteSpace(OR.InvoiceCode))
                 {
-                    this.ShowAlert("退款类型错误");
+                    this.RunOnUi(() =>
+                    {
+                        this.ShowAlert("请先设置设备");
+                    });
                     return;
                 }
-                Intent intent = new Intent();
-                intent.SetComponent(componet);
-                Bundle bundle = new Bundle();
-                mhtOrderAmt = salesOrder.ReadyPay.Value;
-                mhtOrderNo = salesOrder.SubSaleNo;
-                string proc_cd = _orderRefundType == 1 ? "680000" : "200000";
-                var pay_tp = _orderRefundType == 1 ? "1" : "0";
-                bundle.PutString("msg_tp", "0200");
-                bundle.PutString("pay_tp", pay_tp);
-                bundle.PutString("proc_tp", "00");
-                bundle.PutString("proc_cd", proc_cd);//扫码支付680000  //银联支付 200000  //交易处理码需要与支付方式联动
-                //bundle.PutString("amt", salesOrder.ReadyPay.Value.ToString());
-                bundle.PutString("order_no", salesOrder.SubSaleNo);
-                bundle.PutString("appid", "com.companyname.sunits.pay");
-                bundle.PutString("time_stamp", DateTime.Now.ToString("yyyyMMddhhmmss"));
-                bundle.PutString("order_info", salesOrder.Remarks);
-                SendLog("准备进入退款接口：bundle" + JsonConvert.SerializeObject(bundle) + "&时间=" + DateTime.Now.ToString());
-                intent.PutExtras(bundle);
-                this.StartActivityForResult(intent, 2);
             }
             catch (Exception ex)
             {
-                SendLog("退款出现异常！" + ex.Message);
                 this.RunOnUi(() =>
                 {
-                    this.ShowAlert("退款出现异常-请联系管理员", false, (d) =>
-                    {
-                        Close();
-                    });
+                    this.ShowAlert("请先设置设备");
                 });
+                return;
             }
-        }
-        /// <summary>
-        /// 退款
-        /// </summary>
-        /// <param name="resultCode"></param>
-        /// <param name="pay_tp"></param>
-        /// <param name="reason"></param>
-        public async Task ActivityRefundAsync(Result resultCode, string pay_tp, string reason)
-        {
+
             try
             {
-                switch ((int)resultCode)
+                var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
+                scanorder = new MobileBarcodeScanner();
+                scanorder.UseCustomOverlay = true;
+                createOrder.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
+                Button btnCancelScan = createOrder.FindViewById<Button>(Resource.Id.cancel);//取消扫描
+                btnCancelScan.Click += (s, e) =>
                 {
-                    // 支付成功
-                    case -1:
-                        // TODO:
-                        var msg = await RefundBackAsync("A001");
-                        if (string.IsNullOrWhiteSpace(msg))
-                            this.ShowAlert("退款成功", false);
+                    if (scanorder != null)
+                    {
+                        orders.Clear();
+                        OrderDetails.Clear();
+                        this.RunOnUi(() =>
+                        {
+                            ShowActivity<MainActivity>();
+                        });
+                    }
+                };
+                Button btnSubOrder = createOrder.FindViewById<Button>(Resource.Id.subOrder);//提交订单
+                btnSubOrder.Click += (s, e) =>
+                {
+                    if (scanorder != null)
+                    {
+                        if (OrderDetails.Count > 0)
+                        {
+                            this.RunOnUi(() =>
+                            {
+                                OpenOrder();
+                            });
+                        }
                         else
                         {
-                            SendLog("订单号：" + mhtOrderNo + "退款回调失败，失败原因：" + msg + "&时间=" + DateTime.Now.ToString());
-                            this.ShowAlert("退款成功，回调失败：" + msg, false);
+                            this.RunOnUi(() =>
+                            {
+                                ShowToast("当前没有物料");
+                            });
                         }
-                        break;
 
-                    // 支付取消
-                    case 0:
-
-                        if (reason != null)
-                        {
-                            SendLog("订单号：" + mhtOrderNo + "退款取消!&时间=" + DateTime.Now.ToString());
-                            this.ShowAlert("退款取消", false);
-                        }
-                        break;
-                    case -2:
-                        //交易失败
-                        if (reason != null)
-                        {
-                            SendLog("订单号：" + mhtOrderNo + "退款失败!失败原因=" + reason + "&时间=" + DateTime.Now.ToString());
-                            this.ShowAlert("退款失败!!" + reason, false);
-                        }
-                        break;
-
-                    default:
-                        // TODO:
-                        break;
-
-                }
-            }
-            catch (Exception ex)
-            {
-
-                SendLog("退款中转出现异常！" + ex.Message);
-                this.RunOnUi(() =>
-                {
-                    this.ShowAlert("退款中转出现异常-请联系管理员", false, (d) =>
-                    {
-                        Close();
-                    });
-                });
-            }
-
-        }
-        /// <summary>
-        /// 退款回调
-        /// </summary>
-        /// <param name="transStatus"></param>
-        /// <returns></returns>
-        public async Task<string> RefundBackAsync(string transStatus)
-        {
-            SendLog("订单号：" + mhtOrderNo + "进入RefundBack退款回调，支付结果为：" + transStatus + "&时间=" + DateTime.Now.ToString());
-            try
-            {
-                string msg = "";
-                var user = new Users();
-                user.Password = Password;
-                user.UserName = UserName;
-                var tokenInfo = await Post<Users>(url + "/api/Token/Login", user);
-                if (string.IsNullOrWhiteSpace(tokenInfo))
-                {
-                    SendLog("订单号：" + mhtOrderNo + "Token获取失败！，Password：" + user.Password + "&UserName" + user.UserName + "&时间=" + DateTime.Now.ToString());
-                    msg = "Token获取失败！";
-                    return msg;
-                }
-                SendLog("开始解析Token，tokenInfo：" + tokenInfo + "&时间=" + DateTime.Now.ToString());
-                TokenInfo token = ByteToModel<TokenInfo>(tokenInfo);
-                SendLog("Token解析成功，tokenInfo：" + tokenInfo + "&时间=" + DateTime.Now.ToString());
-                SendLog("准备开始退款回调，时间=" + DateTime.Now.ToString());
-                var _salesOrder = await Get(url + "/api/SalesOrder/ReturnSalesOrderPOS?SubSalesNo=" + mhtOrderNo + "&Account=pos机器&sysKey=" + SYSKEY, token.Token);//token.Token
-                SendLog("退款回调成功，时间=" + DateTime.Now.ToString());
-                var result = ByteToModel<ResultInfo>(_salesOrder);
-                SendLog("退款回调成功，解析结果result=" + result + "&时间" + DateTime.Now.ToString());
-                if (result == null)
-                {
-                    msg = "销售单获取失败！";
-                    return msg;
-                }
-                if (result.ResultCode != 1)
-                {
-                    SendLog("退款回调出现问题，ResultMess=" + result.ResultMess + "&时间" + DateTime.Now.ToString());
-                    msg = result.ResultMess;
-                    return msg;
-                }
-                //var obj = (JavaList<SalesOrder>)result.Data;
-                return msg;
-            }
-            catch (Exception ex)
-            {
-                SendLog("退款回调异常");
-                return "退款回调出现异常-请联系管理员";
-            }
-        }
-        #endregion
-        #region 支付
-
-        /// <summary>
-        /// 支付
-        /// </summary>
-        public void Collection(SalesOrder salesOrder)
-        {
-            try
-            {
-                //createFloatView();
-                SendLog("开始支付订单号：" + salesOrder.SubSaleNo + "&时间=" + DateTime.Now.ToString());
-                if (_orderType != 0 && _orderType != 1)
-                {
-                    this.ShowAlert("支付类型错误");
-                    return;
-                }
-
-                Intent intent = new Intent();
-                intent.SetComponent(componet);
-                Bundle bundle = new Bundle();
-                mhtOrderAmt = salesOrder.ReadyPay.Value;
-                mhtOrderNo = salesOrder.SubSaleNo;
-                string proc_cd = _orderType == 0 ? "000000" : "660000";
-                bundle.PutString("msg_tp", "0200");
-                bundle.PutString("pay_tp", "" + _orderType);
-                bundle.PutString("proc_tp", "00");
-                bundle.PutString("proc_cd", proc_cd);
-                bundle.PutString("amt", salesOrder.ReadyPay.Value.ToString());
-                bundle.PutString("order_no", salesOrder.SubSaleNo);
-                bundle.PutString("appid", "com.companyname.sunits.pay");
-                bundle.PutString("time_stamp", DateTime.Now.ToString("yyyyMMddhhmmss"));
-                bundle.PutString("order_info", salesOrder.Remarks);
-                intent.PutExtras(bundle);
-                this.StartActivityForResult(intent, 1);
-                //扫码支付660000  //银联支付 000000  //交易处理码需要与支付方式联动
-                SendLog("准备进入支付接口：bundle" + JsonConvert.SerializeObject(bundle) + "&时间=" + DateTime.Now.ToString());
-
-            }
-            catch (ActivityNotFoundException e)
-            {
-                this.RunOnUi(() =>
-                {
-                    this.ShowAlert("支付接口出现异常-请联系管理员", false, (d) =>
-                    {
-                        Close();
-                    });
-                });
-            }
-            catch (Exception e)
-            {
-                this.RunOnUi(() =>
-                {
-                    this.ShowAlert("支付接口出现异常-请联系管理员", false, (d) =>
-                    {
-                        Close();
-                    });
-                });
-            }
-        }
-
-        /// <summary>
-        /// 支付回调   //mhtOrderNo=SO123456&payChannelType=14&mhtOrderAmt=1000&transStatus=A001&mhtReserved=POSSaleOrder
-        /// </summary>
-        public async Task CollectionCallback(string transStatus, string pay_tp, string refernumber = "")
-        {
-            //try
-            //{
-            //    Log("订单号：" + mhtOrderNo + "进入CollectionCallback回调，支付结果为：" + transStatus + "&时间=" + DateTime.Now.ToString());
-            //    var random = new Random().Next(1000, 9999);
-            //    var amt = decimal.Round(decimal.Parse(mhtOrderAmt.ToString()), 2);
-            //    var mhtAmt = (amt * 100).ToString();
-            //    var mhtReserved = "";
-            //    switch (mOrderType)
-            //    {
-            //        case "RE":
-            //            mhtReserved = "Recepit";
-            //            break;
-            //        case "SO":
-            //            mhtReserved = "POSSaleOrder";
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //    var payChannelType = 14;
-            //    if (pay_tp == "1")
-            //        payChannelType = 13;
-            //    if (pay_tp == "2")
-            //        payChannelType = 12;
-            //    var str = "payChannelType=" + payChannelType + "&transStatus=" + transStatus + "&mhtReserved=" + mhtReserved + "&Refernumber=" + refernumber + "&mhtOrderAmt=" + mhtAmt + "&mhtOrderNo=" + (mhtOrderNo + random.ToString()) + "&nowPayOrderNo=" + mhtOrderNo + "&payType=" + (_orderType == 0 ? "4" : "3") + "&payTypeName=" + (_orderType == 0 ? "POS银联支付" : "POS扫码支付");
-            //    //var json = JsonConvert.DeserializeObject(str);
-            //    Log("开始访问支付回调接口：" + mhtOrderNo + "进入CollectionCallback回调，str为：" + str + "&时间=" + DateTime.Now.ToString());
-            //    var result = await PostObj(webpay + "/AggregatePay/PayBackNotify", str);
-            //    if (result)
-            //    {
-            //        this.RunOnUi(() =>
-            //        {
-            //            this.ShowAlert("同步零售系统成功");
-            //        });
-            //    }
-            //    else
-            //    {
-            //        this.RunOnUi(() =>
-            //        {
-            //            this.ShowAlert("同步零售系统失败！！");
-            //        });
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log("支付回调出现异常！" + ex.Message);
-            //    this.RunOnUi(() =>
-            //    {
-            //        this.ShowAlert("支付回调出现异常-请联系管理员", false, (d) =>
-            //        {
-            //            Close();
-            //        });
-            //    });
-            //}
-
-        }
-        /// <summary>
-        /// 支付中转
-        /// </summary>
-        /// <param name="resultCode"></param>
-        /// <param name="pay_tp"></param>
-        /// <param name="reason"></param>
-        public void ActivityPay(Result resultCode, string pay_tp, string reason, string refernumber)
-        {
-            //try
-            //{
-            //    Log("进入支付中转switch：resultCode：" + resultCode + "&pay_tp=" + pay_tp + "reason=" + reason + "&时间=" + DateTime.Now.ToString());
-            //    switch ((int)resultCode)
-            //    {
-            //        // 支付成功
-            //        case -1:
-            //            // TODO:
-            //            this.ShowAlert("支付成功", false);
-            //            if (pay_tp != "0")
-            //            {
-            //                createFloatView();
-            //                PayPrinting();
-            //            }
-            //            CollectionCallback("A001", pay_tp, refernumber);
-            //            break;
-
-            //        // 支付取消
-            //        case 0:
-
-            //            if (reason != null)
-            //            {
-            //                // TODO:
-            //                this.ShowAlert("支付取消", false);
-            //            }
-            //            break;
-            //        case -2:
-            //            //交易失败
-            //            if (reason != null)
-            //            {
-            //                // TODO: 
-            //                this.ShowAlert("交易失败!!" + reason, false);
-            //                CollectionCallback("A002", pay_tp);
-            //            }
-            //            break;
-
-            //        default:
-            //            // TODO:
-            //            break;
-
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    SendLog("支付中转出现异常！" + ex.Message);
-            //    this.RunOnUi(() =>
-            //    {
-            //        this.ShowAlert("支付中转出现异常-请联系管理员", false, (d) =>
-            //        {
-            //            Close();
-            //        });
-            //    });
-            //}
-
-        }
-        /// <summary>
-        /// 支付打印
-        /// </summary>
-        public async Task PayPrinting()
-        {
-            //try
-            //{
-            //    Intent intent = new Intent();
-            //    intent.SetComponent(componet);
-            //    Bundle bundle = new Bundle();
-            //    bundle.PutString("msg_tp", "0200");
-            //    bundle.PutString("pay_tp", "" + _orderType);
-            //    bundle.PutString("proc_tp", "00");
-            //    bundle.PutString("proc_cd", "700007");//扫码支付660000  //银联支付 000000  //交易处理码需要与支付方式联动
-            //    //bundle.PutString("order_no", mhtOrderNo);
-            //    bundle.PutString("appid", "com.companyname.sunits.pay");
-            //    bundle.PutString("time_stamp", DateTime.Now.ToString("yyyyMMddhhmmss"));
-            //    bundle.PutString("order_info", "");
-            //    Log("准备进入支付打印接口：bundle" + JsonConvert.SerializeObject(bundle) + "&时间=" + DateTime.Now.ToString());
-            //    intent.PutExtras(bundle);
-            //    this.StartActivityForResult(intent, 4);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log("支付成功打印出现异常！" + ex.Message);
-            //    this.RunOnUi(() =>
-            //    {
-            //        this.ShowAlert("支付成功打印出现异常-请联系管理员", false, (d) =>
-            //        {
-            //            Close();
-            //        });
-            //    });
-            //}
-        }
-        #endregion
-        #region 获取销售订单定金信息
-        /// <summary>
-        /// 获取销售单号
-        /// </summary>
-        /// <returns></returns>
-        public Tuple<SalesOrder, string> GetSalesOrder(string orderNo)
-        {
-            try
-            {
-                string msg = "";
-                var token = GetTokenAsync();
-                if (!token.Success)
-                {
-                    SendLog("解析Token失败！！&时间=" + DateTime.Now.ToString());
-                    return new Tuple<SalesOrder, string>(null, token.Message);
-                }
-                var payType = _orderType == 0 ? 2 : 1;
-                SendLog("开始获取获取销售单号，tokenInfo：" + token.Token + "&url=" + url + "/api/SalesOrder/GetSalesOrderDetailBySalesOrderNO?salesOrder=" + orderNo + "&payType=" + payType + "&scanType=" + _scanType + "&时间=" + DateTime.Now.ToString());
-                var _salesOrder = Get(url + "/api/SalesOrder/GetSalesOrderDetailBySalesOrderNO?salesOrder=" + orderNo + "&payType=" + payType + "&scanType=" + _scanType, token.Token);//token.Token
-                SendLog("结束过去销售单号，_salesOrder：" + _salesOrder + "&时间=" + DateTime.Now.ToString());
-                SendLog("开始解析_salesOrder！&时间=" + DateTime.Now.ToString());
-                var result = ByteToModel<SalesOrderInfo>(_salesOrder.Result);
-                SendLog("解析_salesOrder结束！&时间=" + DateTime.Now.ToString());
-                if (result == null)
-                {
-                    msg = "销售单获取失败！";
-                    SendLog("销售单获取失败！！&时间=" + DateTime.Now.ToString());
-                    return new Tuple<SalesOrder, string>(null, msg);
-                }
-                if (result.ResultCode != 1)
-                {
-                    msg = result.ResultMess;
-                    SendLog("获取销售单出现问题！！ResultMess:" + result.ResultMess + "&时间=" + DateTime.Now.ToString());
-                    return new Tuple<SalesOrder, string>(null, msg);
-                }
-                //var obj = (JavaList<SalesOrder>)result.Data;
-                return new Tuple<SalesOrder, string>((SalesOrder)result.Data, msg);
-            }
-            catch (Exception ex)
-            {
-                SendLog("获取销售单号APP出现Exception错误");
-                return new Tuple<SalesOrder, string>(null, "软件内部出现错误,联系管理员");
-            }
-
-        }
-        /// <summary>
-        /// 获取定金单号
-        /// </summary>
-        /// <returns></returns>
-        public Tuple<Receipt, string> GetReceiptSubSaleNo(string ReceiptSubSaleNo)
-        {
-            try
-            {
-                string msg = "";
-                var token = GetTokenAsync();
-                if (!token.Success)
-                {
-                    SendLog("解析Token失败！！&时间=" + DateTime.Now.ToString());
-                    return new Tuple<Receipt, string>(null, token.Message);
-                }
-                SendLog("开始获取获取定金单号，tokenInfo：" + token.Token + "&url=" + url + "/api/SaleReceipt/GetSaleReceiptDeposit?ReceiptSubSaleNo=" + ReceiptSubSaleNo + "&sysKey=" + SYSKEY + "&时间=" + DateTime.Now.ToString());
-                var _receiptSubSaleNo = Get(url + "/api/SaleReceipt/GetSaleReceiptDeposit?ReceiptSubSaleNo=" + ReceiptSubSaleNo + "&sysKey=" + SYSKEY, token.Token).Result;//token.Token
-                SendLog("结束过去定金单号，_salesOrder：" + _salesOrder + "&时间=" + DateTime.Now.ToString());
-                SendLog("开始解析_receiptSubSaleNo！&时间=" + DateTime.Now.ToString());
-                var result = ByteToModel<ReceiptInfo>(_receiptSubSaleNo);
-                SendLog("解析_receiptSubSaleNo结束！&时间=" + DateTime.Now.ToString());
-                if (result == null)
-                {
-                    msg = "定金单获取失败！";
-                    SendLog("定金单获取失败！！&时间=" + DateTime.Now.ToString());
-                    return new Tuple<Receipt, string>(null, msg);
-                }
-                if (result.ResultCode != 1)
-                {
-                    msg = result.ResultMess;
-                    SendLog("获取定金单出现问题！！ResultMess:" + result.ResultMess + "&时间=" + DateTime.Now.ToString());
-                    return new Tuple<Receipt, string>(null, msg);
-                }
-                //var obj = (JavaList<SalesOrder>)result.Data;
-                return new Tuple<Receipt, string>((Receipt)result.Data, msg);
-            }
-            catch (Exception ex)
-            {
-                SendLog("获取定金单号APP出现Exception错误");
-                return new Tuple<Receipt, string>(null, "软件内部出现错误,联系管理员");
-            }
-
-        }
-        /// <summary>
-        /// 获取Token
-        /// </summary>
-        /// <returns></returns>
-        public TokenInfo GetTokenAsync()
-        {
-            try
-            {
-                string msg = "";
-                var user = new Users();
-                user.Password = Password;
-                user.UserName = UserName;
-                var tokenInfo = Post<Users>(url + "/api/Token/Login", user);
-                if (string.IsNullOrWhiteSpace(tokenInfo.Result))
-                {
-                    msg = "Token获取失败！";
-                    SendLog("获取定金单号Token获取失败！&时间=" + DateTime.Now.ToString());
-                    return new TokenInfo() { Message = "Token获取失败！" };
-                }
-                var payType = _orderType == 0 ? 2 : 1;
-                SendLog("获取定金单号开始解析Token，tokenInfo：" + tokenInfo + "&时间=" + DateTime.Now.ToString());
-                TokenInfo token = ByteToModel<TokenInfo>(tokenInfo.Result);
-                return token;
-            }
-            catch (Exception)
-            {
-                return new TokenInfo() { Message = "Token解析失败！" };
-            }
-
-        }
-        //处理RE单号逻辑
-        public void ManageRE(string ReceiptSubSaleNo)
-        {
-            try
-            {
-                mOrderType = "RE";
-                if (_scanType == 2)
-                {
-                    this.RunOnUi(() => { this.ShowAlert("RE单号不支持退款", false); });
-                    return;
-                }
-                SendLog("准备进入ManageRE方法RE单号处理逻辑！ReceiptSubSaleNo=" + ReceiptSubSaleNo + "&时间=" + DateTime.Now.ToString());
-                var _receiptSubSaleNo = GetReceiptSubSaleNo(ReceiptSubSaleNo);
-                //CloseFloatWindow();
-                if (_receiptSubSaleNo.Item1 == null || _receiptSubSaleNo.Item1.tb_Receipt_Id == 0)
-                {
-
-                    this.RunOnUi(() => { this.ShowAlert(_receiptSubSaleNo.Item2, false); });
-                }
-                else
-                {
-                    if (_receiptSubSaleNo.Item1.PayStatus != "A003")
-                    {
-                        this.RunOnUi(() => { this.ShowAlert("订单支付过或非线上资金收据", false); });
                     }
-                    else
-                    {
-                        var model = _receiptSubSaleNo.Item1;
-                        _salesOrder = new SalesOrder() { ReadyPay = model.ReceiptAmount, SubSaleNo = model.ReceiptNo, Remarks = model.Remark, CreateDate = model.CreateDate.Value, PayMent = 0 };
-                        Collection(_salesOrder);
-                    }
-                }
+                };
+                scanorder.CustomOverlay = createOrder;
+                var ivScanningorder = createOrder.FindViewById<ImageView>(Resource.Id.ivScanning);
+                CreteView(createOrder);
+                // 从上到下的平移动画
+                var verticalAnimationOrder = new TranslateAnimation(0, 0, 0, 800)
+                {
+                    Duration = 3000, // 动画持续时间
+                    RepeatCount = Animation.Infinite // 无限循环
+                };
+                verticalAnimationOrder.StartNow();
+                // 播放动画
+                ivScanningorder.Animation = verticalAnimationOrder;
+                var result = scanorder.Scan(this, mbs).Result;
+                AddList(result);
             }
             catch (Exception ex)
             {
-                SendLog("处理RE单号逻辑现异常！" + ex.Message);
+                SendLog("创建扫描对象出现异常" + ex.Message);
                 this.RunOnUi(() =>
                 {
-                    this.ShowAlert("处理RE单号逻辑出现异常-请联系管理员", false, (d) =>
+                    this.ShowAlert("创建扫描对象出现异常-请联系管理员", false, (d) =>
                     {
                         Close();
                     });
                 });
             }
-
         }
-        //处理SO单号逻辑
-        public void ManageSO(string saleOrder)
+        public void CreteView(View view)
+        {
+
+
+            //var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
+
+            var orderNumber = view.FindViewById<TextView>(Resource.Id.orderNumber);
+            if (orders!=null&& orders.Count>0)
+            {
+                var recyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
+                var adapter = new RecyclerViewAdapter(OrderDetails, this);
+                recyclerView.SetLayoutManager(new LinearLayoutManager(this));
+                recyclerView.AddItemDecoration(new Comment.MyItemDecoration(this, (int)Orientation.Vertical));
+                recyclerView.SetAdapter(adapter);
+                //TextView baseView = view.FindViewById<TextView>(Resource.Id.baseView);
+                //gridview.RemoveView(baseView);
+                //foreach (var item in orders)
+                //{
+                //    TextView text = new TextView(this);
+                //    text.TextSize = 20;
+                //    text.SetPadding(8, 8, 8, 8);
+                //    text.Text = item;
+                //    gridview.AddView(text);
+                //}
+                orderNumber.Text = orders.Count.ToString();
+                //TableRow tableRow = new TableRow(this);
+                //tableRow.Left
+            }
+        }
+        public void AddList(ZXing.Result result)
+        {
+            var bf = true;
+            if (result == null)
+                bf=false;
+            if (!string.IsNullOrWhiteSpace(result.Text))
+            {
+                if (orders.Contains(result.Text))
+                    bf = false;
+                var b = AddOrders(result.Text);
+                if (!b.Result)
+                    bf = false;
+                if (bf)
+                { 
+                    string orderDetails = result.Text;
+                    orders.Add(orderDetails);
+                    this.RunOnUi(() =>
+                    {
+                        ShowToast("添加成功");
+                    });
+                }
+                CreateOrderScan();
+            }    
+        }
+        private async Task<bool> AddOrders(string Barcode)
         {
             try
             {
-                mOrderType = "SO";
-                SendLog("准备进入GetSalesOrder方法SO单号处理逻辑！saleOrder=" + saleOrder + "&时间=" + DateTime.Now.ToString());
-                var models = GetSalesOrder(saleOrder);
-                _salesOrder = models.Item1;
-                SendLog("HandleScanResultAsync方法获取销售单信息！销售单信息=" + JsonConvert.SerializeObject(_salesOrder) + "&时间=" + DateTime.Now.ToString());
-                this.CloseFloatWindow();
-                if (models.Item1 == null)
+                var result = Get(url + "/api/Material/GetMateriaBarcode?Barcode=" + Barcode + "&sysKey=" + SYSKEY, "");//token.Token
+                var _salesOrderDetails = ByteToModel<SalesOrderDetailInfo>(result.Result);
+                if (_salesOrderDetails.ResultCode == 1)
                 {
-                    this.RunOnUi(() => { this.ShowAlert(models.Item2); });
-                }
-                else
-                {
-                    //if (models.Item1.ReadyPay == models.Item1.PayMent)
-                    //{
-                    //    //this.RunOnUi(this.CloseFloatWindow);
-                    //    this.RunOnUi(() => { this.ShowAlert("订单已开过票", false); });
-                    //}
-                    //else
-                    if (models.Item1.OnlinePay == 1)
+                    foreach (var item in OrderDetails)
                     {
-                        //this.RunOnUi(this.CloseFloatWindow);
-                        //支付
-                        if (_scanType == 1)
+                        if (item.Barcode.Contains(_salesOrderDetails.Data.Barcode))
                         {
-                            if (models.Item1.ReadyPay == models.Item1.PayMent)
+                            this.RunOnUi(() =>
                             {
-                                this.RunOnUi(() => { this.ShowAlert("订单已支付,已开票", false); });
-                            }
-                            else
-                                this.RunOnUi(() => { this.ShowAlert("订单已支付，未开票", false); });
-                        }
-                        #region 退款
-                        else if (_scanType == 2)//退款
-                        {
-                            _orderRefundType = models.Item1.PayType;//支付类型
-                            var ctime = models.Item1.CreateDate.ToString("yyyyMMdd");
-                            var ntime = DateTime.Now.ToString("yyyyMMdd");
-                            if (models.Item1.ReadyPay == models.Item1.PayMent)
-                            {
-                                this.RunOnUi(() => { this.ShowAlert("已经开票的暂时不支持退款", false); });
-                            }
-                            else if (!models.Item1.SubSaleNo.Contains("SO"))
-                            {
-                                this.RunOnUi(() => { this.ShowAlert("只能退SO的单子", false); });
-                            }
-                            else if (_orderRefundType != 1 && _orderRefundType != 2)
-                            {
-                                this.RunOnUi(() => { this.ShowAlert("退款失败，类型不符", false); });
-                                SendLog("订单号：" + mhtOrderNo + "退款失败，_orderRefundType：" + _orderRefundType + "PayType=" + models.Item1.PayType + "&时间=" + DateTime.Now.ToString());
-                            }
-                            else if (ctime != ntime)
-                            {
-                                this.RunOnUi(() => { this.ShowAlert("退款失败，只能退当日", false); });
-                            }
-                            else
-                            {
-                                this.createFloatView();
-                                Refund(models.Item1);
-                            }
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        if (_scanType == 1)
-                        {
-                            if (models.Item1.PayType == 0)
-                            {
-                                _salesOrder = models.Item1;
-                                this.createFloatView();
-                                Collection(models.Item1);
-                            }
-                            else
-                            {
-                                this.RunOnUi(() => { this.ShowAlert("订单已支付", false); });
-                            }
-                        }
-                        else if (_scanType == 2)
-                        {
-                            this.RunOnUi(() => { this.ShowAlert("订单未支付", false); });
+                                ShowToast("此条码已存在");
+                            });
+                            return false;
                         }
                     }
+                    OrderDetails.Add(_salesOrderDetails.Data);
+                    return true;
+                }
+                else {
+                    this.RunOnUi(() =>
+                    {
+                        ShowToast("未找到此条码");
+                    });
+                    return false;
                 }
             }
             catch (Exception ex)
             {
-                SendLog("处理SO单号逻辑！" + ex.Message);
                 this.RunOnUi(() =>
                 {
-                    this.ShowAlert("处理SO单号逻辑-请联系管理员", false, (d) =>
-                    {
-                        Close();
-                    });
+                    ShowToast("未找到此条码");
                 });
+                SendLog("提交订单，根据条码获取数据：条码="+ Barcode+"!!发生异常");
+                return false;
             }
 
+        }
+        private void OpenOrder()
+        {
+            Intent intent = new Intent(this, typeof(OrderList));
+            var objval = JsonConvert.SerializeObject(OrderDetails);
+            orders.Clear();
+            OrderDetails.Clear();
+            intent.PutExtra("obj", objval);
+            StartActivity(intent);
+        }
+        /// <summary>
+        /// 
+        /// 页面得click事件  直接标注方法名
+        /// </summary>
+        /// <param name="v"></param>
+        [Java.Interop.Export("Cancel")]
+        public void Cancel(View v)
+        {
+            Button button = (v as Button);
+            var val = button.Text;
+            this.RunOnUi(() =>
+            {
+                ShowToast("取消取消取消89"+ val);
+            });
         }
         #endregion
     }

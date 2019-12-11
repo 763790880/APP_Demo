@@ -61,6 +61,7 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Android.Export" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -70,22 +71,45 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseActivity.cs" />
+    <Compile Include="Comment\MyItemDecoration.cs" />
+    <Compile Include="Comment\ObjectTypeHelper.cs" />
+    <Compile Include="Comment\OrderAdapter.cs" />
+    <Compile Include="Comment\SetUpTheAdapter.cs" />
+    <Compile Include="Comment\SetUpTheAdapterG.cs" />
     <Compile Include="Comment\SysComment.cs" />
     <Compile Include="LKLModel\AidlMerListener.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Model\DatabaseTXT.cs" />
+    <Compile Include="Model\Engineer.cs" />
+    <Compile Include="Model\EngineerInfo.cs" />
+    <Compile Include="Model\MSalesOrder.cs" />
+    <Compile Include="Model\MSalesOrderDetail.cs" />
+    <Compile Include="Model\MSalesOutDetail.cs" />
+    <Compile Include="Model\MSalesSubOrder.cs" />
+    <Compile Include="Model\MSalesViews.cs" />
+    <Compile Include="Model\OrderNOInfo.cs" />
+    <Compile Include="Model\Orgnization.cs" />
+    <Compile Include="Model\OrgnizationInfo.cs" />
+    <Compile Include="Model\ORJavaObj.cs" />
     <Compile Include="Model\Receipt.cs" />
     <Compile Include="Model\ReceiptInfo.cs" />
     <Compile Include="Model\ResultInfo.cs" />
     <Compile Include="Model\SalesOrder.cs" />
+    <Compile Include="Model\SalesOrderDetailInfo.cs" />
+    <Compile Include="Model\SalesOrderDetails.cs" />
     <Compile Include="Model\SalesOrderInfo.cs" />
     <Compile Include="Model\TokenInfo.cs" />
     <Compile Include="Model\Users.cs" />
+    <Compile Include="OrderList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecyclerViewAdapter.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="View1.cs" />
+    <Compile Include="ScanOrderActivity.cs" />
+    <Compile Include="SetUpTheActivity.cs" />
     <Compile Include="WebApi\HttpApi.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="File\5d9da3a9c497a.keystore" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
@@ -244,16 +268,31 @@
     <AndroidResource Include="Resources\drawable\tubiao.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\123.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\CreateOrder.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\OrderList.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Item_OrderList.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\SetUpThe.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\JarBind\JarBind.csproj">
       <Project>{dc070ecf-1ae8-44cf-bb09-921403e878a7}</Project>
       <Name>JarBind</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\123.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <TransformFile Include="Resources\layout\Share.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

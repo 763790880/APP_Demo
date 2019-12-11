@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:orientation="vertical">
+    <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="175dp"
+        android:layout_weight="4">
+        <Spinner
+            android:prompt="@string/planet_prompt"
+            android:layout_width="199.5dp"
+            android:layout_height="match_parent"
+            
+            android:id="@+id/butengineer" />
+        <Button
+            android:text="扫描会员卡"
+            android:layout_width="173.5dp"
+            android:layout_height="match_parent"
+            android:id="@+id/button1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+  </RelativeLayout>
+        <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="190dp"
+        android:layout_weight="4">
+        <EditText
+            android:inputType="textPersonName"
+            android:layout_width="179dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/customerName" />
+        <EditText
+            android:inputType="phone"
+            android:layout_width="193dp"
+            android:layout_height="wrap_content"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/customerPhone"
+            android:layout_alignParentRight="true" />
+
+  </RelativeLayout>
+  <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#FF00"
+            android:dividerHeight="5dp" />
+  </RelativeLayout>
+  <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
+        android:layout_weight="4">
+        <TextView
+            android:text="数量：100"
+            android:layout_width="wrap_content"
+            android:layout_height="31.0dp"
+            android:gravity="center"
+            android:id="@+id/orderQuantity"  />
+        <TextView
+            android:text="金额：100"
+            android:layout_width="wrap_content"
+            android:layout_height="25.0dp"
+            android:gravity="center"
+            android:id="@+id/orderPrice"
+            android:layout_alignParentBottom="true" />
+        <Button
+            android:text="刷卡支付"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:id="@+id/credateOrderUnion"
+            android:layout_centerHorizontal="true" />
+
+
+        <Button
+            android:text="扫码支付"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:id="@+id/credateOrderScan"
+            android:layout_alignParentRight="true" />
+  </RelativeLayout>
+</LinearLayout>

@@ -14,6 +14,7 @@ public class MainActivity
 			"n_onRequestPermissionsResult:(I[Ljava/lang/String;[I)V:GetOnRequestPermissionsResult_IarrayLjava_lang_String_arrayIHandler\n" +
 			"n_onActivityResult:(IILandroid/content/Intent;)V:GetOnActivityResult_IILandroid_content_Intent_Handler\n" +
 			"n_onKeyDown:(ILandroid/view/KeyEvent;)Z:GetOnKeyDown_ILandroid_view_KeyEvent_Handler\n" +
+			"n_Cancel:(Landroid/view/View;)V:__export__\n" +
 			"";
 		mono.android.Runtime.register ("App3.MainActivity, App3", MainActivity.class, __md_methods);
 	}
@@ -57,6 +58,14 @@ public class MainActivity
 	}
 
 	private native boolean n_onKeyDown (int p0, android.view.KeyEvent p1);
+
+
+	public void Cancel (android.view.View p0)
+	{
+		n_Cancel (p0);
+	}
+
+	private native void n_Cancel (android.view.View p0);
 
 	private java.util.ArrayList refList;
 	public void monodroidAddReference (java.lang.Object obj)
