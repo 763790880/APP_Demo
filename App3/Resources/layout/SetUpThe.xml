@@ -20,12 +20,7 @@
         android:layout_width="fill_parent"
         android:layout_height="170dp"
         android:layout_weight="4">
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="47.0dp"
-            android:minWidth="25px"
-            android:minHeight="45px"
-            android:id="@+id/spinnerGroup" />
+
         </RelativeLayout>
     <Button
         android:text="确认"

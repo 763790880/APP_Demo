@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace App3
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
     public class SetUpTheActivity:BaseActivity
     {
         private Model.DatabaseTXT databaseTXT=new Model.DatabaseTXT();
@@ -35,15 +35,27 @@ namespace App3
                 List<Model.Orgnization> engineers = GetInvoice().Result;
                 typesSpinner.Adapter = new SetUpTheAdapter(this, engineers);
                 typesSpinner.ItemSelected += Invoice_ItemSelected;
+                var model= ReadTXTModel();
+                if (model != null)
+                {
+                    for (int i = 0; i < engineers.Count; i++)
+                    {
+                        if (engineers[i].OrgnizationNumber == model.InvoiceCode)
+                        {
+                            typesSpinner.SetSelection(i);
+                        }
+                    }
+                }
                 //----------------------------------------------------------------
-                spinnerGroup = FindViewById<Spinner>(Resource.Id.spinnerGroup);
-                engineerGroup=GetGroup("Y00").Result;
-                if (engineerGroup == null)
-                    engineerGroup = new List<Model.Orgnization>();
-                spinnerGroup.Adapter = new SetUpTheAdapterG(this, engineerGroup);
-                spinnerGroup.ItemSelected += Group_ItemSelected;
+                //spinnerGroup = FindViewById<Spinner>(Resource.Id.spinnerGroup);
+                //engineerGroup=GetGroup("Y00").Result;
+                //if (engineerGroup == null)
+                //    engineerGroup = new List<Model.Orgnization>();
+                //spinnerGroup.Adapter = new SetUpTheAdapterG(this, engineerGroup);
+                //spinnerGroup.SetSelection(1);
+                //spinnerGroup.ItemSelected += Group_ItemSelected;
             });
-            task.Wait();
+            task.Wait(); 
             #endregion
             #region
             Button btnSubOrder = this.FindViewById<Button>(Resource.Id.butSub);//确认设置
@@ -98,20 +110,20 @@ namespace App3
             databaseTXT.InvoiceID = model.tb_Orgnization_Id;
             databaseTXT.InvoiceCode = model.OrgnizationNumber;
             databaseTXT.InvoiceName = model.OrgnizationName;
-            if (one > 0)
-                Task.Run(() => {//不能直接赋值   --刷新后没有选中新值
-                    var data = GetGroup(model.OrgnizationNumber).Result;
-                    engineerGroup.Clear();
-                    foreach (var item in data)
-                    {
-                        engineerGroup.Add(item);
-                    }
-                    new SetUpTheAdapterG(this, engineerGroup).NotifyDataSetChanged();
-                    //spinnerGroup.ItemSelected += Group_ItemSelected;
-                    //new SetUpTheAdapterG(this, engineerGroup).GetView(1, null, null);
-                });
-            else
-                one++;
+            //if (one > 0)
+            //    Task.Run(() => {//不能直接赋值   --刷新后没有选中新值
+            //        var data = GetGroup(model.OrgnizationNumber).Result;
+            //        engineerGroup.Clear();
+            //        foreach (var item in data)
+            //        {
+            //            engineerGroup.Add(item);
+            //        }
+            //        new SetUpTheAdapterG(this, engineerGroup).NotifyDataSetChanged();
+            //        //spinnerGroup.ItemSelected += Group_ItemSelected;
+            //        //new SetUpTheAdapterG(this, engineerGroup).GetView(1, null, null);
+            //    });
+            //else
+            //    one++;
         }
         private void Group_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
@@ -125,12 +137,12 @@ namespace App3
         }
         private void SetGroup(string orgnizationNumber)
         {
-            var spinnerGroup = FindViewById<Spinner>(Resource.Id.spinnerGroup);
-            engineerGroup = GetGroup(orgnizationNumber).Result;
-            if (engineerGroup == null)
-                engineerGroup = new List<Model.Orgnization>();
-            spinnerGroup.Adapter = new SetUpTheAdapterG(this, engineerGroup);
-            spinnerGroup.ItemSelected += Group_ItemSelected;
+            //var spinnerGroup = FindViewById<Spinner>(Resource.Id.spinnerGroup);
+            //engineerGroup = GetGroup(orgnizationNumber).Result;
+            //if (engineerGroup == null)
+            //    engineerGroup = new List<Model.Orgnization>();
+            //spinnerGroup.Adapter = new SetUpTheAdapterG(this, engineerGroup);
+            //spinnerGroup.ItemSelected += Group_ItemSelected;
         }
         private async Task<List<Model.Orgnization>> GetGroup(string orgnizationNumber)
         {
@@ -150,6 +162,7 @@ namespace App3
         {
             if (keyCode == Keycode.Back && e.Action == KeyEventActions.Down)
             {
+                CloseFloatWindow();
                 ShowActivity<MainActivity>();
             }
             return base.OnKeyDown(keyCode, e);

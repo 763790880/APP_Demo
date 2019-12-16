@@ -11,18 +11,16 @@
         android:layout_weight="4">
         <Spinner
             android:prompt="@string/planet_prompt"
-            android:layout_width="199.5dp"
+            android:layout_width="169.5dp"
             android:layout_height="match_parent"
             
             android:id="@+id/butengineer" />
-        <Button
-            android:text="扫描会员卡"
-            android:layout_width="173.5dp"
+              <Spinner
+            android:prompt="@string/planet_prompt"
+            android:layout_width="219.5dp"
             android:layout_height="match_parent"
-            android:id="@+id/button1"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:id="@+id/butgroup" />
   </RelativeLayout>
         <RelativeLayout
         android:background="#F5F5F5"
@@ -42,6 +40,13 @@
             android:minHeight="25px"
             android:id="@+id/customerPhone"
             android:layout_alignParentRight="true" />
+        <Button
+            android:text="会员"
+            android:layout_width="72.0dp"
+            android:layout_height="36.0dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/butmember"
+            android:layout_marginTop="8.0dp" />
 
   </RelativeLayout>
   <RelativeLayout

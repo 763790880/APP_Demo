@@ -8,9 +8,11 @@ attr;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\a
 background;obj\Debug\90\res\mipmap-anydpi-v26\ic_launcher.xml
 background;obj\Debug\90\res\mipmap-anydpi-v26\ic_launcher_round.xml
 Button;obj\Debug\90\res\layout\activity_main.xml
+Button;obj\Debug\90\res\layout\cashreceipts.xml
 Button;obj\Debug\90\res\layout\createorder.xml
 Button;obj\Debug\90\res\layout\orderlist.xml
 Button;obj\Debug\90\res\layout\setupthe.xml
+Button;obj\Debug\90\res\layout\setupthepage.xml
 cache-path;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\42\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
 color;obj\Debug\90\res\values\colors.xml
 color;obj\Debug\90\res\values\ic_launcher_background.xml
@@ -18,6 +20,7 @@ corners;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\drawa
 corners;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\drawable\roundedbgdark.xml
 corners;obj\Debug\90\res\drawable\corners_bg.xml
 declare-styleable;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\attrs.xml
+EditText;obj\Debug\90\res\layout\cashreceipts.xml
 EditText;obj\Debug\90\res\layout\orderlist.xml
 external-cache-path;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\42\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
 external-path;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\42\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
@@ -36,6 +39,7 @@ item;obj\Debug\90\res\drawable\rootblock_icon_clear_bg.xml
 item;obj\Debug\90\res\drawable\rootblock_icon_download_bg.xml
 item;obj\Debug\90\res\drawable\rootblock_icon_set_bg.xml
 item;obj\Debug\90\res\values\styles.xml
+LinearLayout;obj\Debug\90\res\layout\cashreceipts.xml
 LinearLayout;obj\Debug\90\res\layout\createorder.xml
 LinearLayout;obj\Debug\90\res\layout\item_orderlist.xml
 LinearLayout;obj\Debug\90\res\layout\loadingdialog.xml
@@ -48,10 +52,12 @@ RelativeLayout;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\re
 RelativeLayout;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingimage.xml
 RelativeLayout;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingprogress.xml
 RelativeLayout;obj\Debug\90\res\layout\activity_main.xml
+RelativeLayout;obj\Debug\90\res\layout\cashreceipts.xml
 RelativeLayout;obj\Debug\90\res\layout\createorder.xml
 RelativeLayout;obj\Debug\90\res\layout\item_orderlist.xml
 RelativeLayout;obj\Debug\90\res\layout\orderlist.xml
 RelativeLayout;obj\Debug\90\res\layout\setupthe.xml
+RelativeLayout;obj\Debug\90\res\layout\setupthepage.xml
 RelativeLayout;obj\Debug\90\res\layout\zxingoverlay.xml
 resources;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\attrs.xml
 resources;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\strings.xml
@@ -67,6 +73,7 @@ shape;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\drawabl
 shape;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\drawable\roundedbgdark.xml
 shape;obj\Debug\90\res\drawable\corners_bg.xml
 solid;obj\Debug\90\res\drawable\corners_bg.xml
+Spinner;obj\Debug\90\res\layout\cashreceipts.xml
 Spinner;obj\Debug\90\res\layout\orderlist.xml
 Spinner;obj\Debug\90\res\layout\setupthe.xml
 string;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\strings.xml
@@ -75,6 +82,7 @@ style;obj\Debug\90\res\values\styles.xml
 TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loading.xml
 TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingimage.xml
 TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingprogress.xml
+TextView;obj\Debug\90\res\layout\cashreceipts.xml
 TextView;obj\Debug\90\res\layout\createorder.xml
 TextView;obj\Debug\90\res\layout\item_orderlist.xml
 TextView;obj\Debug\90\res\layout\loadingdialog.xml

@@ -9,7 +9,7 @@ using ZXing.Mobile;
 
 namespace App3
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
     public class ScanOrderActivity:BaseActivity
     {
         protected static MobileBarcodeScanningOptions mbs;
@@ -82,6 +82,7 @@ namespace App3
                 // 播放动画
                 ivScanning.Animation = verticalAnimation;
                 var result = scanner.Scan(this, mbs).Result;
+                DisplayCamera().Wait();
                 CreteView(result.Text);
             }
             catch (Exception ex)

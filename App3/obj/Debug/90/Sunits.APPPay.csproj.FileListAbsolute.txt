@@ -752,3 +752,11 @@ C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\stamp\_CopyPdbFiles.stamp
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\stamp\_GenerateJavaStubs.stamp
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\layout\cashreceipts.xml
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\shezhi.png
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\dingjin.png
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\kaidan.png
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\src\md56b537a863e73a163728b485bb6fa50db\CashReceiptsActivity.java
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\layout\setupthepage.xml
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\src\md56b537a863e73a163728b485bb6fa50db\SetUpThePageActivity.java
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\src\md548a6724d25ca3fee3c133aaf3c748cae\GetData.java

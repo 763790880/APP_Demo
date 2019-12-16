@@ -19,6 +19,7 @@ using Android.Content.PM;
 using System.Collections.Generic;
 using Android.Widget;
 using Android.Support.V7.Widget;
+using Android.Hardware.Camera2;
 
 namespace App3
 {
@@ -150,7 +151,9 @@ namespace App3
                 verticalAnimation.StartNow();
                 // 播放动画
                 ivScanning.Animation = verticalAnimation;
+                scanner.AutoFocus();
                 var result = scanner.Scan(this, mbs).Result;
+                DisplayCamera().Wait();
                 HandleScanResultAsync(result);
             }
             catch (Exception ex)
@@ -329,23 +332,26 @@ namespace App3
         public void Bind()
         {
             TextView textPrompt = zxingOverlay.FindViewById<TextView>(Resource.Id.textPrompt);
-            Button btnScan = this.FindControl<Button>("btnScan");
-            btnScan.Click += (s, e) =>
-            {
-                var str = ReadTXT();
-                this.ShowToast(str);
-                //var ddd=systemInf.SerialNo;
-                //InvokeRemoteService();
-                createFloatView();
-                textPrompt.Text = "微信/支付宝支付，请将销售订单二维码放入框内";
-                _orderType = 1;//支付类型
-                _scanType = 1;//扫描类型
-                Task t = new Task(AutoScan);
-                t.Start();
-            };
+            //Button btnScan = this.FindControl<Button>("btnScan");
+            //btnScan.Click += (s, e) =>
+            //{
+            //    var str = ReadTXT();
+            //    this.ShowToast(str);
+            //    //var ddd=systemInf.SerialNo;
+            //    //InvokeRemoteService();
+            //    createFloatView();
+            //    textPrompt.Text = "微信/支付宝支付，请将销售订单二维码放入框内";
+            //    _orderType = 1;//支付类型
+            //    _scanType = 1;//扫描类型
+            //    Task t = new Task(AutoScan);
+            //    t.Start();
+            //};
             Button btnHttp = this.FindControl<Button>("btnUnion");
             btnHttp.Click += (s, e) =>
             {
+                var b = Check();
+                if (!b)
+                    return;
                 createFloatView();
                 textPrompt.Text = "银行卡支付，请将销售订单二维码放入框内";
                 _orderType = 0;//支付类型
@@ -353,43 +359,53 @@ namespace App3
                 Task t = new Task(AutoScan);
                 t.Start();
             };
-            Button btnRefund = this.FindControl<Button>("btnRefund");//退款
-            btnRefund.Click += (s, e) =>
-            {
-                createFloatView();
-                textPrompt.Text = "退款扫描，请将销售订单二维码放入框内";
-                _scanType = 2;//扫描类型
-                //AutoScan();
-                Task t = new Task(AutoScan);
-                t.Start();
-            };
-            Button btnSettlement = this.FindControl<Button>("btnSettlement");//结算
-            btnSettlement.Click += (s, e) =>
-            {
-                //OpenOrder();
-                _scanType = 3;//扫描类型
-                //UserDialogs.Instance.Alert("您确认开始结算吗？","","确认");
-                this.RunOnUi(() =>
-                {
-                    this.ShowAlert("您确认开始结算吗？", true, (d) =>
-                    {
-                        Settlement(1);
-                    });
-                });
+            //Button btnRefund = this.FindControl<Button>("btnRefund");//退款
+            //btnRefund.Click += (s, e) =>
+            //{
+            //    createFloatView();
+            //    textPrompt.Text = "退款扫描，请将销售订单二维码放入框内";
+            //    _scanType = 2;//扫描类型
+            //    //AutoScan();
+            //    Task t = new Task(AutoScan);
+            //    t.Start();
+            //};
+            //Button btnSettlement = this.FindControl<Button>("btnSettlement");//结算
+            //btnSettlement.Click += (s, e) =>
+            //{
+            //    //OpenOrder();
+            //    _scanType = 3;//扫描类型
+            //    //UserDialogs.Instance.Alert("您确认开始结算吗？","","确认");
+            //    this.RunOnUi(() =>
+            //    {
+            //        this.ShowAlert("您确认开始结算吗？", true, (d) =>
+            //        {
+            //            Settlement(1);
+            //        });
+            //    });
 
+            //};
+            Button btnMargin = this.FindControl<Button>("btnMargin");//定金
+            btnMargin.Click += (s, e) =>
+            {
+                var b = Check();
+                if (!b)
+                    return;
+                createFloatView();
+                ShowActivity<CashReceiptsActivity>();
+                CloseFloatWindow();
             };
-            Button button2 = this.FindControl<Button>("button2");//创建销售单
+            Button button2 = this.FindControl<Button>("btnOrder");//创建销售单
             button2.Click += (s, e) =>
             {
                 createFloatView();
                 Task t = new Task(CreateOrderScan);
                 t.Start();
             };
-            Button button1 = this.FindControl<Button>("button1");//设置
+            Button button1 = this.FindControl<Button>("btnSetUpThe");//设置
             button1.Click += (s, e) =>
             {
                 createFloatView();
-                ShowActivity<SetUpTheActivity>();
+                ShowActivity<SetUpThePageActivity>();
             };
         }
         /// <summary>
@@ -549,28 +565,9 @@ namespace App3
         private MobileBarcodeScanner scanorder;
         public void CreateOrderScan()
         {
-            try
-            {
-                var ORjson = ReadTXT();
-                var OR = JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
-                if (string.IsNullOrWhiteSpace(OR.GroupCode) || string.IsNullOrWhiteSpace(OR.InvoiceCode))
-                {
-                    this.RunOnUi(() =>
-                    {
-                        this.ShowAlert("请先设置设备");
-                    });
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                this.RunOnUi(() =>
-                {
-                    this.ShowAlert("请先设置设备");
-                });
+            var b=Check();
+            if (!b)
                 return;
-            }
-
             try
             {
                 var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
@@ -582,8 +579,8 @@ namespace App3
                 {
                     if (scanorder != null)
                     {
-                        orders.Clear();
-                        OrderDetails.Clear();
+                        //orders.Clear();
+                        //OrderDetails.Clear();
                         this.RunOnUi(() =>
                         {
                             ShowActivity<MainActivity>();
@@ -615,6 +612,7 @@ namespace App3
                 scanorder.CustomOverlay = createOrder;
                 var ivScanningorder = createOrder.FindViewById<ImageView>(Resource.Id.ivScanning);
                 CreteView(createOrder);
+                //new rect
                 // 从上到下的平移动画
                 var verticalAnimationOrder = new TranslateAnimation(0, 0, 0, 800)
                 {
@@ -624,7 +622,14 @@ namespace App3
                 verticalAnimationOrder.StartNow();
                 // 播放动画
                 ivScanningorder.Animation = verticalAnimationOrder;
+                //ivScanningorder.StopNestedScroll();
+                //SetPreviewCallback
+                scanorder.AutoFocus();
                 var result = scanorder.Scan(this, mbs).Result;
+                DisplayCamera().Wait();
+                createOrder.Dispose();
+                verticalAnimationOrder.Dispose();
+                ivScanningorder.Dispose();
                 AddList(result);
             }
             catch (Exception ex)
@@ -670,10 +675,14 @@ namespace App3
         }
         public void AddList(ZXing.Result result)
         {
+            //震动
+            Vibrator vibrator = (Vibrator)Application.Context.GetSystemService(Context.VibratorService);
+            long[] pattern = { 0, 350, 220, 350 };
+            vibrator.Vibrate(pattern, -1);
             var bf = true;
             if (result == null)
                 bf=false;
-            if (!string.IsNullOrWhiteSpace(result.Text))
+            if (result!=null&&!string.IsNullOrWhiteSpace(result.Text))
             {
                 if (orders.Contains(result.Text))
                     bf = false;
@@ -690,7 +699,11 @@ namespace App3
                     });
                 }
                 CreateOrderScan();
-            }    
+            }
+            this.RunOnUi(() =>
+            {
+                ShowToast("取消开单");
+            });
         }
         private async Task<bool> AddOrders(string Barcode)
         {
@@ -717,7 +730,7 @@ namespace App3
                 else {
                     this.RunOnUi(() =>
                     {
-                        ShowToast("未找到此条码");
+                        ShowToast(_salesOrderDetails.ResultMess);
                     });
                     return false;
                 }
@@ -731,14 +744,13 @@ namespace App3
                 SendLog("提交订单，根据条码获取数据：条码="+ Barcode+"!!发生异常");
                 return false;
             }
-
         }
         private void OpenOrder()
         {
             Intent intent = new Intent(this, typeof(OrderList));
             var objval = JsonConvert.SerializeObject(OrderDetails);
-            orders.Clear();
-            OrderDetails.Clear();
+            //orders.Clear();
+            //OrderDetails.Clear();
             intent.PutExtra("obj", objval);
             StartActivity(intent);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Android.App;
@@ -10,14 +11,16 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Android.Views.Animations;
 using Android.Widget;
 using App3.Comment;
 using App3.Model;
 using Newtonsoft.Json;
+using ZXing.Mobile;
 
 namespace App3
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
     public class OrderList : BaseActivity
     {
         private Android.Widget.Toolbar toolbar;
@@ -27,6 +30,9 @@ namespace App3
         private string user;//客户名称
         private string phone;//客户手机号
         private List<Model.SalesOrderDetails> salesOrderDetails;
+        private DatabaseTXT OR;
+        Spinner spinnerGroup;
+        List<Orgnization> engineerGroup;
         [Obsolete]
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,6 +42,10 @@ namespace App3
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.OrderList);
+            CreateScan();
+            var ORjson = ReadTXT();
+            OR = JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
+
             #region
             var ordersjson = Intent.GetStringExtra("obj");
             //if (string.IsNullOrWhiteSpace(ordersjson))  orderQuantity
@@ -52,16 +62,23 @@ namespace App3
             recyclerView.AddItemDecoration(new MyItemDecoration(this, (int)Orientation.Vertical));
             recyclerView.SetAdapter(adapter);
             #endregion
-            #region GetUser放在同步方法中出现了异常
-            var task=Task.Run(()=> {
+            #region GetUser放在同步方法中出现了异常  butgroup
+            var task =Task.Run(()=> {
                 var typesSpinner = FindViewById<Spinner>(Resource.Id.butengineer);
                 List<Model.Engineer> engineers = GetUser().Result;
                 typesSpinner.Adapter = new OrderAdapter(this, engineers);
                 typesSpinner.ItemSelected += typesSpinner_ItemSelected;
+                //-----------------------------------------
+                spinnerGroup = FindViewById<Spinner>(Resource.Id.butgroup);
+                engineerGroup = GetGroup(OR.InvoiceCode).Result;
+                spinnerGroup.Adapter = new SetUpTheAdapterG(this, engineerGroup);
+                //spinnerGroup.SetSelection(1);
+                spinnerGroup.ItemSelected += Group_ItemSelected;
             });
             task.Wait();
-            #endregion
             
+            #endregion
+
             //
             Button btnOrderScan = this.FindControl<Button>("credateOrderScan");//扫码支付
             btnOrderScan.Click += (s, e) =>
@@ -79,14 +96,51 @@ namespace App3
                 Task t = new Task(CredateOrder);
                 t.Start();
             };
+            Button butmember = this.FindControl<Button>("butmember");//会员
+            butmember.Click += (s, e) =>
+            {
+                Task.Run(AutoScan);
+            };
             base.OnCreate(savedInstanceState);
         }
         private void typesSpinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
             var toast = spinner.GetItemAtPosition(e.Position);
-            itcode = toast.ToString();
+            var engineer = toast.Cast<Model.Engineer>();
+            itcode = engineer.Account;
+            for (int i = 0; i < engineerGroup.Count; i++)
+            {
+                if (engineer.ORCode == engineerGroup[i].OrgnizationNumber)
+                {
+                    spinnerGroup.SetSelection(i);
+                }
+            }
+       
             //Toast.MakeText(this, toast.ToString(), ToastLength.Long).Show();
+        }
+        private void Group_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+            var toast = spinner.GetItemAtPosition(e.Position);
+            var model = toast.Cast<Model.Orgnization>();
+            OR.GroupID = model.tb_Orgnization_Id;
+            OR.GroupCode = model.OrgnizationNumber;
+            OR.GroupName = model.OrgnizationName;
+            ShowToast(model.OrgnizationName);
+        }
+        private async Task<List<Model.Orgnization>> GetGroup(string orgnizationNumber)
+        {
+            try
+            {
+                var result = await Get(url + "/api/Orgnization/GetGroup?OrgnizationNumber=" + orgnizationNumber, "");//token.Token
+                var _engineerInfo = ByteToModel<Model.OrgnizationInfo>(result);
+                return _engineerInfo.Data;
+            }
+            catch (Exception ex)
+            {
+                return new List<Model.Orgnization>();
+            }
         }
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -100,10 +154,7 @@ namespace App3
         {
             try
             {
-                var ORjson=ReadTXT();
-                var model=JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
-                var OrgnizationNumber = model.GroupCode;
-                var result =await Get(url + "/api/Orgnization/GetOrUser?OrgnizationNumber=" + OrgnizationNumber, "");//token.Token
+                var result =await Get(url + "/api/Orgnization/GetOrUser?OrgnizationNumber=" + OR.InvoiceCode, "");//token.Token
                 var _engineerInfo = ByteToModel<Model.EngineerInfo>(result);
                 return _engineerInfo.Data;
             }
@@ -113,6 +164,7 @@ namespace App3
             }
 
         }
+        private string orderSO;
         /// <summary>
         /// 页面得click事件  直接标注方法名
         /// </summary>
@@ -120,6 +172,11 @@ namespace App3
         public void CredateOrder()
         {
             createFloatView();
+            if (!string.IsNullOrWhiteSpace(orderSO))
+            {
+                ManageSO(orderSO);
+                return;
+            }
             EditText customerName = FindViewById<EditText>(Resource.Id.customerName);
             EditText customerPhone = FindViewById<EditText>(Resource.Id.customerPhone);
             var phone = customerPhone.Text;
@@ -128,8 +185,6 @@ namespace App3
             #region 创建销售单json
             try
             {
-                var ORjson = ReadTXT();
-                var OR = JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
                 var time = DateTime.Now;
                 MSalesViews mSalesViews = new MSalesViews();
                 mSalesViews.sysKey = SYSKEY;
@@ -183,6 +238,7 @@ namespace App3
                 mSalesSubOrder.OnlinePay = 0;
                 mSalesSubOrder.Creator = itcode;
                 mSalesSubOrder.CreateDate = time;
+                mSalesSubOrder.FromType = 7;
                 #endregion
                 #region MSalesOutDetail
                 List<MSalesOutDetail> mSalesOutDetails = new List<MSalesOutDetail>();
@@ -225,6 +281,7 @@ namespace App3
                         return;
                     }
                     var orderNO = orderNOInfo.Data;
+                    orderSO = orderNO;
                     Task.Run(()=> {
                         ManageSO(orderNO);
                     });
@@ -305,6 +362,135 @@ namespace App3
                 });
             }
 
+        }
+        #endregion
+        #region 会员
+        protected View zxingOverlay;
+        protected MobileBarcodeScanner scanner;
+        protected MobileBarcodeScanningOptions mbs;
+        protected ImageView ivScanning;
+        // 从上到下的平移动画
+        protected Animation verticalAnimation;
+        /// <summary>
+        /// 创建扫描对象
+        /// </summary>
+        public void CreateScan()
+        {
+            try
+            {
+                scanner = new MobileBarcodeScanner();
+                zxingOverlay = LayoutInflater.FromContext(this).Inflate(Resource.Layout.ZxingOverlay, null);
+                scanner.UseCustomOverlay = false;
+                zxingOverlay.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
+                scanner.CustomOverlay = zxingOverlay;
+                //Button btnCancelScan = zxingOverlay.FindViewById<Button>(Resource.Id.btnCancelScan);//取消扫描
+                //btnCancelScan.Click += (s, e) =>
+                //{
+                //    if (scanner != null)
+                //    {
+                //        scanner.Cancel();
+                //    }
+                //};
+                //<Button
+                //android: id = "@+id/btnCancelScan"
+                //android: textAppearance = "?android:textAppearanceMedium"
+                //android: layout_width = "fill_parent"
+                //android: layout_height = "wrap_content"
+                //android: text = "取消扫描"
+                //android: textColor = "#ffffffff"
+                //android: background = "#aa000000"
+                //android: gravity = "center" />
+
+
+
+                mbs = MobileBarcodeScanningOptions.Default;
+                mbs.AssumeGS1 = true;
+                mbs.AutoRotate = true;
+                mbs.DisableAutofocus = false;
+                mbs.PureBarcode = false;
+                mbs.TryInverted = true;
+                mbs.TryHarder = true;
+                mbs.UseCode39ExtendedMode = true;
+                mbs.UseFrontCameraIfAvailable = false;
+                mbs.UseNativeScanning = true;
+
+                ivScanning = zxingOverlay.FindViewById<ImageView>(Resource.Id.ivScanning);
+                // 从上到下的平移动画
+                verticalAnimation = new TranslateAnimation(0, 0, 0, 800)
+                {
+                    Duration = 3000, // 动画持续时间
+                    RepeatCount = Animation.Infinite // 无限循环
+                };
+            }
+            catch (Exception ex)
+            {
+                SendLog("创建扫描对象出现异常" + ex.Message);
+                this.RunOnUi(() =>
+                {
+                    this.ShowAlert("创建扫描对象出现异常-请联系管理员", false, (d) =>
+                    {
+                        Close();
+                    });
+                });
+            }
+
+        }
+        /// <summary>
+        /// 扫描动画
+        /// </summary>
+        public void AutoScan()
+        {
+            try
+            {
+                verticalAnimation.StartNow();
+                // 播放动画
+                ivScanning.Animation = verticalAnimation;
+                scanner.AutoFocus();
+                var result = scanner.Scan(this, mbs).Result;
+                DisplayCamera().Wait();
+                GiveVal(result);
+            }
+            catch (Exception ex)
+            {
+                SendLog("扫描对象出现异常" + ex.Message);
+                this.RunOnUi(() =>
+                {
+                    this.ShowAlert("扫描对象出现异常-请联系管理员", false, (d) =>
+                    {
+                        Close();
+                    });
+                });
+            }
+
+        }
+        public async Task GiveVal(ZXing.Result result)
+        {
+            SendLog("进入扫描回调HandleScanResultAsync！&时间=" + DateTime.Now.ToString());
+            if (result != null && !string.IsNullOrEmpty(result.Text))
+            {
+                //var member = new GetData().GetMember(result.Text);
+                var model = Get(url + "/api/Customer/GetMemberInfoByServiceCardNo?ServiceCardNo=" + result.Text, "").Result;
+                var resulr = JsonConvert.DeserializeObject<MemberInfo>(model);
+                if (resulr.ResultCode != 1)
+                {
+                    this.RunOnUi(() => { this.ShowToast(resulr.ResultMess); });
+                    return ;
+                }
+                if (resulr.Data != null)
+                {
+                    RunOnUi(() => {
+                        var cusName = FindViewById<EditText>(Resource.Id.customerName);
+                        cusName.Text = resulr.Data.CustomerName;
+                        var cusPhone = FindViewById<EditText>(Resource.Id.customerPhone);
+                        cusPhone.Text = resulr.Data.CustomerPhone;
+                    });
+                }
+            }
+            else
+            {
+                this.RunOnUi(this.CloseFloatWindow);
+                this.RunOnUi(() => { this.ShowToast("扫描取消"); });
+            }
         }
         #endregion
     }

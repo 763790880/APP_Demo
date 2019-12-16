@@ -11,16 +11,15 @@ using Acr.UserDialogs;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Hardware;
 using Android.OS;
 using Android.Views;
-using Android.Views.Animations;
 using Android.Widget;
 using App3.Model;
 using Com.Lkl.Cloudpos.Mdx.Aidl;
 using Com.Lkl.Cloudpos.Mdx.Aidl.System;
 using Newtonsoft.Json;
 using RestSharp;
-using ZXing.Mobile;
 
 namespace App3
 {
@@ -474,6 +473,21 @@ namespace App3
             text = System.IO.File.ReadAllText(mRecordFile);
             return text;
         }
+        protected internal DatabaseTXT ReadTXTModel()
+        {
+            try
+            {
+                var json = ReadTXT();
+                var model = JsonConvert.DeserializeObject<DatabaseTXT>(json);
+                return model;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
         /// <summary>
         /// 创建文件
         /// </summary>
@@ -695,9 +709,12 @@ namespace App3
                         if (pay_tp != "0")
                         {
                             createFloatView();
-                            PayPrinting();
+                            Task.Run(PayPrinting);
+                            //PayPrinting();
                         }
-                        CollectionCallback("A001", pay_tp, refernumber);
+                        var t=CollectionCallback("A001", pay_tp, refernumber);
+                        t.Wait();
+                        ShowActivity<MainActivity>();
                         break;
 
                     // 支付取消
@@ -1199,6 +1216,55 @@ namespace App3
             {
                 SendLog("退款回调异常");
                 return "退款回调出现异常-请联系管理员";
+            }
+        }
+        #endregion
+
+        #region 检测设备
+        public bool Check()
+        {
+            try
+            {
+                var ORjson = ReadTXT();
+                var OR = JsonConvert.DeserializeObject<DatabaseTXT>(ORjson);
+                if (string.IsNullOrWhiteSpace(OR.InvoiceCode))
+                {
+                    this.RunOnUi(() =>
+                    {
+                        this.ShowAlert("请先设置设备");
+                    });
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.RunOnUi(() =>
+                {
+                    this.ShowAlert("请先设置设备");
+                });
+                return false;
+            }
+        }
+
+        public async Task DisplayCamera()
+        {
+            bool canUse = true;
+            Camera mCamera = null;
+            try
+            {
+                // TODO camera驱动挂掉,处理??    
+                mCamera = Camera.Open();
+            }
+            catch (Exception e)
+            {
+                canUse = false;
+            }
+            if (canUse)
+            {
+                mCamera.Release();
+                //mCamera.SetPreviewDisplay(null);
+                mCamera = null;
             }
         }
         #endregion

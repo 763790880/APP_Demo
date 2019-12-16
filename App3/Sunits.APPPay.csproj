@@ -71,17 +71,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseActivity.cs" />
+    <Compile Include="CashReceiptsActivity.cs" />
+    <Compile Include="Comment\GetData.cs" />
     <Compile Include="Comment\MyItemDecoration.cs" />
     <Compile Include="Comment\ObjectTypeHelper.cs" />
     <Compile Include="Comment\OrderAdapter.cs" />
+    <Compile Include="Comment\ScanBase.cs" />
     <Compile Include="Comment\SetUpTheAdapter.cs" />
     <Compile Include="Comment\SetUpTheAdapterG.cs" />
     <Compile Include="Comment\SysComment.cs" />
     <Compile Include="LKLModel\AidlMerListener.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Model\CashReceipts.cs" />
     <Compile Include="Model\DatabaseTXT.cs" />
     <Compile Include="Model\Engineer.cs" />
     <Compile Include="Model\EngineerInfo.cs" />
+    <Compile Include="Model\Member.cs" />
+    <Compile Include="Model\MemberInfo.cs" />
     <Compile Include="Model\MSalesOrder.cs" />
     <Compile Include="Model\MSalesOrderDetail.cs" />
     <Compile Include="Model\MSalesOutDetail.cs" />
@@ -106,6 +112,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="ScanOrderActivity.cs" />
     <Compile Include="SetUpTheActivity.cs" />
+    <Compile Include="SetUpThePageActivity.cs" />
     <Compile Include="WebApi\HttpApi.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -268,9 +275,6 @@
     <AndroidResource Include="Resources\drawable\tubiao.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\123.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\CreateOrder.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +297,25 @@
       <Project>{dc070ecf-1ae8-44cf-bb09-921403e878a7}</Project>
       <Name>JarBind</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\CashReceipts.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\shezhi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\dingjin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\kaidan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\SetUpThePage.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

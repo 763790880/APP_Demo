@@ -23,8 +23,8 @@
         android:minHeight="100px"
         android:layout_marginLeft="47px"
         android:layout_marginTop="680px"
-        android:background="@drawable/saoma"
-        android:id="@+id/btnScan" />
+        android:background="@drawable/kaidan"
+        android:id="@+id/btnOrder" />
 
 
         <Button
@@ -35,8 +35,8 @@
         android:minHeight="100px"
         android:layout_marginLeft="47px"
         android:layout_marginTop="850px"
-        android:background="@drawable/jiesuan"
-        android:id="@+id/btnSettlement" />
+        android:background="@drawable/dingjin"
+        android:id="@+id/btnMargin" />
     <Button
         android:text=""
         android:layout_width="149.0dp"
@@ -45,26 +45,7 @@
         android:minHeight="100px"
         android:layout_marginLeft="375px"
         android:layout_marginTop="850px"
-        android:background="@drawable/tuikuan"
-        android:id="@+id/btnRefund" />
-        <Button
-        android:text=""
-        android:layout_width="149.0dp"
-        android:layout_height="70.0dp"
-        android:minWidth="100px"
-        android:minHeight="100px"
-        android:layout_marginLeft="75px"
-        android:layout_marginTop="50px"
-        android:background="@drawable/abc_btn_check_material"
-        android:id="@+id/button2" />    <Button
-        android:text=""
-        android:layout_width="149.0dp"
-        android:layout_height="70.0dp"
-        android:minWidth="100px"
-        android:minHeight="100px"
-        android:layout_marginLeft="375px"
-        android:layout_marginTop="50px"
-        android:background="@drawable/abc_ic_clear_material"
-        android:id="@+id/button1" />
+        android:background="@drawable/shezhi"
+        android:id="@+id/btnSetUpThe" />
 
 </RelativeLayout>

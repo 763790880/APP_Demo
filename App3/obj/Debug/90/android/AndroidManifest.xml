@@ -7,6 +7,7 @@
   <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.VIBRATE" />
   <application android:allowBackup="true" android:icon="@drawable/tubiao" android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme" android:name="android.app.Application" android:debuggable="true">
     <!--<activity android:name=".MainActivity">
       <intent-filter>
@@ -17,30 +18,17 @@
     <activity
           android:name=".OrderList"
           android:label="@string/app_name" />-->
+    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.CashReceiptsActivity" />
     <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.OrderList">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.ScanOrderActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.SetUpTheActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
+    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.OrderList" />
+    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.ScanOrderActivity" />
+    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.SetUpTheActivity" />
+    <activity android:label="@string/app_name" android:theme="@style/AppTheme" android:name="md56b537a863e73a163728b485bb6fa50db.SetUpThePageActivity" />
     <service android:name="md5dcb6eccdc824e0677ffae8ccdde42930.KeepAliveService" />
     <receiver android:enabled="true" android:exported="false" android:label="Essentials Battery Broadcast Receiver" android:name="md5d630c3d3bfb5f5558520331566132d97.BatteryBroadcastReceiver" />
     <receiver android:enabled="true" android:exported="false" android:label="Essentials Energy Saver Broadcast Receiver" android:name="md5d630c3d3bfb5f5558520331566132d97.EnergySaverBroadcastReceiver" />
