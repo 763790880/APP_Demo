@@ -83,7 +83,6 @@ TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layo
 TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingimage.xml
 TextView;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\layout\loadingprogress.xml
 TextView;obj\Debug\90\res\layout\cashreceipts.xml
-TextView;obj\Debug\90\res\layout\createorder.xml
 TextView;obj\Debug\90\res\layout\item_orderlist.xml
 TextView;obj\Debug\90\res\layout\loadingdialog.xml
 TextView;obj\Debug\90\res\layout\orderlist.xml

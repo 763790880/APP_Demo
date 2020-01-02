@@ -39,6 +39,7 @@ namespace App3
             //Loding 加载层
             UserDialogs.Init(this);
             //Java.Lang.Class.FromType(typeof(componet))
+            Window.SetSoftInputMode(SoftInput.AdjustPan);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.OrderList);
@@ -156,7 +157,7 @@ namespace App3
             {
                 var result =await Get(url + "/api/Orgnization/GetOrUser?OrgnizationNumber=" + OR.InvoiceCode, "");//token.Token
                 var _engineerInfo = ByteToModel<Model.EngineerInfo>(result);
-                return _engineerInfo.Data;
+                return _engineerInfo.Data==null?new List<Engineer>(): _engineerInfo.Data;
             }
             catch (Exception ex)
             {

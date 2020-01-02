@@ -3,68 +3,130 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ADADAD"
      android:orientation="vertical">
     <RelativeLayout
         android:background="#F5F5F5"
         android:layout_width="fill_parent"
-        android:layout_height="175dp"
-        android:layout_weight="4">
+        android:layout_height="107.0dp"
+        android:layout_weight="4"
+         android:layout_marginRight="7.0dp"
+        android:layout_marginLeft="7.0dp"
+        android:layout_marginBottom="1.0dp"
+        android:layout_marginTop="8.0dp">
+        <TextView
+            android:text="选择用户"
+            android:layout_width="119.0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/textView1"
+            android:layout_marginTop="0.0dp"
+            android:layout_alignParentBottom="true" />
         <Spinner
             android:prompt="@string/planet_prompt"
-            android:layout_width="169.5dp"
+            android:layout_width="220.0dp"
             android:layout_height="match_parent"
-            
-            android:id="@+id/butengineer" />
-              <Spinner
+            android:id="@+id/butengineer"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+       <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="107dp"
+         android:layout_marginRight="7.0dp"
+        android:layout_marginLeft="7.0dp"
+        android:layout_marginBottom="1.0dp"
+        android:layout_weight="4">
+        <TextView
+            android:text="选择网点"
+            android:layout_width="119.5dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/textView1" />
+        <Spinner
             android:prompt="@string/planet_prompt"
-            android:layout_width="219.5dp"
+            android:layout_width="220dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:id="@+id/butgroup" />
+
   </RelativeLayout>
         <RelativeLayout
         android:background="#F5F5F5"
         android:layout_width="fill_parent"
-        android:layout_height="190dp"
-        android:layout_weight="4">
+        android:layout_height="107dp"
+        android:layout_weight="4"
+         android:layout_marginRight="7.0dp"
+        android:layout_marginLeft="7.0dp"
+        android:layout_marginBottom="1.0dp">
+        <TextView
+            android:text="会员名称"
+            android:layout_width="119.5dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/textView1" />
         <EditText
             android:inputType="textPersonName"
-            android:layout_width="179dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/customerName" />
+            android:layout_width="220.0dp"
+            android:layout_height="56.0dp"
+            android:minWidth="25px"
+            android:hint="请输入用户名"
+            android:textSize="14sp"
+            android:minHeight="25px"
+            android:id="@+id/customerName"
+            android:layout_alignParentRight="true" />
+        </RelativeLayout>
+    <RelativeLayout
+        android:background="#F5F5F5"
+        android:layout_width="fill_parent"
+        android:layout_height="107dp"
+        android:layout_weight="4"
+         android:layout_marginRight="7.0dp"
+        android:layout_marginLeft="7.0dp"
+        android:layout_marginBottom="3.0dp">
+        <TextView
+            android:text="会员手机号"
+            android:layout_width="119.5dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/textView1" />
         <EditText
             android:inputType="phone"
-            android:layout_width="193dp"
-            android:layout_height="wrap_content"
+            android:layout_width="220.0dp"
+            android:layout_height="56.0dp"
             android:minWidth="25px"
+            android:hint="请输入手机号"
+             android:textSize="14sp"
             android:minHeight="25px"
             android:id="@+id/customerPhone"
             android:layout_alignParentRight="true" />
         <Button
-            android:text="会员"
-            android:layout_width="72.0dp"
-            android:layout_height="36.0dp"
+            android:text=""
+            android:layout_width="42.0dp"
+            android:layout_height="42.0dp"
+            android:background="@drawable/saomiaotubiao"
             android:layout_alignParentRight="true"
             android:id="@+id/butmember"
-            android:layout_marginTop="8.0dp" />
+            android:layout_marginTop="0dp" />
 
-  </RelativeLayout>
-  <RelativeLayout
-        android:background="#F5F5F5"
+    </RelativeLayout>
+    <RelativeLayout
+        android:background="#ADADAD"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="337.5dp"
         android:layout_weight="4">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="377.5dp"
             android:divider="#FF00"
             android:dividerHeight="5dp" />
-  </RelativeLayout>
+    </RelativeLayout>
   <RelativeLayout
         android:background="#F5F5F5"
         android:layout_width="fill_parent"
-        android:layout_height="180dp"
+        android:layout_height="115dp"
         android:layout_weight="4">
         <TextView
             android:text="数量：100"

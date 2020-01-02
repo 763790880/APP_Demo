@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="155dp"
+        android:layout_height="222.5dp"
         android:orientation="horizontal">
         <RelativeLayout
             android:background="#aa000000"
@@ -60,19 +60,21 @@
     <RelativeLayout
         android:background="#F5F5F5"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="528.5dp"
         android:layout_weight="4">
-      <android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="498.0dp"
             android:divider="#FF00"
+            android:background="#ADADAD"
             android:dividerHeight="5dp" />
     </RelativeLayout>
     <RelativeLayout
-        android:background="#F5F5F5"
+        android:background="#ADADAD"
         android:layout_width="fill_parent"
-        android:layout_height="250dp"
+        android:layout_height="272dp"
+        
         android:layout_weight="4">
         <Button
             android:text="取消"
@@ -80,18 +82,15 @@
             android:layout_height="fill_parent"
             android:minWidth="25px"
             android:minHeight="25px"
+            android:backgroundTint="#01E5AB"
             android:onClick="Cancel"
+
             android:id="@+id/cancel" />
-        <TextView
-            android:text="订单数量"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             android:layout_centerHorizontal="true"
-            android:id="@+id/orderNumber" />
         <Button
             android:text="提交订单"
             android:layout_width="140dp"
             android:layout_height="fill_parent"
+            android:backgroundTint="#01E5AB"
             android:id="@+id/subOrder"
             android:layout_alignParentRight="true" />
     </RelativeLayout>

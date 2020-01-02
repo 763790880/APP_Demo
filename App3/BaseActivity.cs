@@ -6,6 +6,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Android.App;
@@ -29,7 +30,11 @@ namespace App3
         protected const string SYSKEY = "UE9T57q/5LiK5pSv5LuY";
         protected const string Password = "A2MqspbZhTBAdtIVBLGhc12cu/G8OCyX";//A2MqspbZhTBAdtIVBLGhc12cu/G8OCyX
         protected const string UserName = "20181115144834995";
+
+
         public ComponentName componet = new ComponentName("com.lkl.cloudpos.payment", "com.lkl.cloudpos.payment.activity.MainMenuActivity");
+
+
         public const string url = "http://itest.sunits.cc";//获取单号  正式//http://rsapi.sunits.com   //http://itest.sunits.cc  //http://r27532594m.qicp.vip:39767
         public const string webpay = "http://jxcweixin15815.sunits.cc";//支付回调  //  正式//http://inventory.sunits.net:15813 //http://r27532594m.qicp.vip:39767  //http://jxcweixin15815.sunits.cc
         protected static bool IsFirst = false;//是否首次运行  并检测完系统
@@ -277,10 +282,11 @@ namespace App3
         {
             try
             {
+                var token =await GetToken();
                 RestClient restClient = Instance(url);
                 RestRequest request = new RestRequest();
                 //request.AddQueryParameter("id","")  添加url的参数(AddUrlSegment)
-                //request.AddHeader("Authorization","token");添加请求头参数
+                request.AddHeader("auth", token);//添加请求头参数
                 request.AddHeader("content-type", "application/json; charset=UTF-8");
                 request.AddJsonBody(user);
                 //request.AddParameter("application/x-www-form-urlencoded; charset=UTF-8", user, ParameterType.RequestBody);
@@ -312,6 +318,8 @@ namespace App3
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(token))
+                    token =await GetToken();
                 RestClient restClient = Instance(url);
                 RestRequest request = new RestRequest();
                 request.AddHeader("content-type", "application/json; charset=UTF-8");
@@ -329,11 +337,44 @@ namespace App3
             }
 
         }
+        private static async Task<string> GetToken()
+        {
+            try
+            {
+                var user = new Users();
+                user.Password = Password;
+                user.UserName = UserName;
+                //var tokenInfo = await Post<Users>(url + "/api/Token/Login", user);
+                RestClient restClient = Instance(url + "/api/Token/Login");
+                RestRequest request = new RestRequest();
+                //request.AddQueryParameter("id","")  添加url的参数(AddUrlSegment)
+                request.AddHeader("content-type", "application/json; charset=UTF-8");
+                request.AddJsonBody(user);
+                //request.AddParameter("application/x-www-form-urlencoded; charset=UTF-8", user, ParameterType.RequestBody);
+                var response = await restClient.ExecutePostTaskAsync(request);
+                //var response = await restClient.ExecutePostTaskAsync<string>(request); 自动序列化
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    TokenInfo token = ByteToModel<TokenInfo>(response.Content);
+                    return token.Token;
+                }
+                else
+                {
+                    return "";
+                }
+       
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+
+        }
         internal static RestClient Instance(string url)
         {
             var restClient = new RestClient(url)
             {
-                Timeout = 20000,
+                Timeout = 5000,
                 ReadWriteTimeout = 5000
             };
             return restClient;
@@ -373,8 +414,9 @@ namespace App3
         #region 终止
         protected void Close()
         {
-            Finish();
-            Process.KillProcess(Android.OS.Process.MyPid());
+            FinishAffinity();
+            //Thread.CurrentThread.Abort();
+            //Process.KillProcess(Android.OS.Process.MyPid());
         }
         #endregion
 

@@ -550,7 +550,7 @@ namespace App3
 
             //var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
 
-            var orderNumber = view.FindViewById<TextView>(Resource.Id.orderNumber);
+            //var orderNumber = view.FindViewById<TextView>(Resource.Id.orderNumber);
             if (orders != null && orders.Count > 0)
             {
                 var recyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
@@ -568,7 +568,7 @@ namespace App3
                 //    text.Text = item;
                 //    gridview.AddView(text);
                 //}
-                orderNumber.Text = orders.Count.ToString();
+                //orderNumber.Text = orders.Count.ToString();
                 //TableRow tableRow = new TableRow(this);
                 //tableRow.Left
             }

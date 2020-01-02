@@ -26,7 +26,7 @@
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
     <AndroidKeyStore>true</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\Sunits\Desktop\5d9da3a9c497a.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore>C:\Users\Sunits\Desktop\左面\5d9da3a9c497a.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>sunits123456</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>sunits</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>sunits123456</AndroidSigningKeyPass>
@@ -39,9 +39,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <MandroidI18n />
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <LangVersion>8.0</LangVersion>
@@ -316,6 +316,12 @@
     <AndroidResource Include="Resources\layout\SetUpThePage.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <TransformFile Include="Resources\drawable\shape_corner_down.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\saomiaotubiao.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

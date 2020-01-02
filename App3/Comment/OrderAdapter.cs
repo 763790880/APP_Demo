@@ -46,7 +46,9 @@ namespace App3.Comment
                 //LayoutInflater
                 view = this.action.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem1, null);
             }
-                view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = this.engineers[position].Account+"-"+this.engineers[position].UserName.ToString();
+            TextView tv = view.FindViewById<TextView>(Android.Resource.Id.Text1);
+            tv.Text = this.engineers[position].Account + "-" + this.engineers[position].UserName.ToString();
+            tv.SetTextSize(Android.Util.ComplexUnitType.Sp,14);
             return view;
         }
     }

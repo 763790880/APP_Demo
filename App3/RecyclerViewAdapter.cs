@@ -25,7 +25,7 @@ namespace App3
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             MyViewHolder myViewHolder = holder as MyViewHolder;
-            myViewHolder.tvTitle.Text = data[position].Description+"\n"+ data[position].Barcode;
+            myViewHolder.tvTitle.Text = data[position].Description+"("+ data[position].Code+ ")\n"+ data[position].Barcode;
             myViewHolder.orderPrice.Text = data[position].Money.ToString()+"￥";
         }
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewItem)
@@ -54,7 +54,8 @@ namespace App3
         public MyViewHolder(View itemView) : base(itemView)
         {
             tvTitle = itemView.FindViewById<TextView>(Resource.Id.orderDescribe);
-            orderPrice= itemView.FindViewById<TextView>(Resource.Id.orderPrice);
+            //tvTitle.LineHeight = 19;
+            orderPrice = itemView.FindViewById<TextView>(Resource.Id.orderPrice);
         }
     }
 }

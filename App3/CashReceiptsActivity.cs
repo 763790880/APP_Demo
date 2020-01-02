@@ -21,8 +21,10 @@ namespace App3
     {
         private string itcode;
         private string REcode;
+        private decimal money;
         EditText cusPhone;
         EditText cusName;
+        string _phone;
         [Obsolete]
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -75,7 +77,13 @@ namespace App3
         public void CredateOrder()
         {
             createFloatView();
-            if (!string.IsNullOrWhiteSpace(REcode))
+            EditText customerName = FindViewById<EditText>(Resource.Id.customerName);
+            EditText customerPhone = FindViewById<EditText>(Resource.Id.customerPhone);
+            EditText receiptPrice = FindViewById<EditText>(Resource.Id.receiptPrice);
+            var phone = customerPhone.Text;
+            var name = customerName.Text;
+            var price = receiptPrice.Text;
+            if (!string.IsNullOrWhiteSpace(REcode)&& phone==_phone&&money == Convert.ToDecimal(price))
             {
                 Task.Run(() =>
                 {
@@ -84,12 +92,6 @@ namespace App3
             }
             else
             {
-                EditText customerName = FindViewById<EditText>(Resource.Id.customerName);
-                EditText customerPhone = FindViewById<EditText>(Resource.Id.customerPhone);
-                EditText receiptPrice = FindViewById<EditText>(Resource.Id.receiptPrice);
-                var phone = customerPhone.Text;
-                var name = customerName.Text;
-                var price = receiptPrice.Text;
                 string address = url + "/api/SaleReceipt/SavePOSReceipt";
                 #region 创建资金收据json
                 try
@@ -108,6 +110,8 @@ namespace App3
                     cashReceipts.CustomerName = name;
                     address += "&ReceiptAmount=" + Convert.ToDecimal(price);
                     cashReceipts.ReceiptAmount = Convert.ToDecimal(price);
+                    money = Convert.ToDecimal(price);
+                    _phone = phone;
                     address += "&Orgnization_Id=" + OR.InvoiceID;
                     cashReceipts.Orgnization_Id = OR.InvoiceID;
                     #endregion
