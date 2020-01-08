@@ -497,7 +497,6 @@ namespace App3
         }
         #endregion
 
-
         #region 创建设置文件
         private string mRecordFile = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath + "/sunits.txt";
         private Java.IO.File dir = Android.OS.Environment.ExternalStorageDirectory;
@@ -513,7 +512,9 @@ namespace App3
                 return text;
             }
             text = System.IO.File.ReadAllText(mRecordFile);
-            return text;
+            byte[] bytes = Convert.FromBase64String(text);
+            string decode = Encoding.GetEncoding("utf-8").GetString(bytes);
+            return decode;
         }
         protected internal DatabaseTXT ReadTXTModel()
         {
@@ -543,7 +544,9 @@ namespace App3
                 FileStream fs = new FileStream(path, FileMode.OpenOrCreate);
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    sw.WriteLine(obj);
+                    byte[] bytes = Encoding.GetEncoding("utf-8").GetBytes(obj);
+                    string jon= Convert.ToBase64String(bytes);
+                    sw.WriteLine(jon);
                 }
                 return true;
             }
@@ -566,6 +569,7 @@ namespace App3
             }
         }
         #endregion
+
         #region 创建悬浮框
         /// <summary>
         /// 创建弹层
@@ -755,8 +759,6 @@ namespace App3
                             //PayPrinting();
                         }
                         var t=CollectionCallback("A001", pay_tp, refernumber);
-                        t.Wait();
-                        ShowActivity<MainActivity>();
                         break;
 
                     // 支付取消
@@ -1288,7 +1290,6 @@ namespace App3
                 return false;
             }
         }
-
         public async Task DisplayCamera()
         {
             bool canUse = true;
@@ -1307,6 +1308,48 @@ namespace App3
                 mCamera.Release();
                 //mCamera.SetPreviewDisplay(null);
                 mCamera = null;
+            }
+        }
+        /// <summary>
+        /// 验证组织机构
+        /// </summary>
+        /// <param name="mid">商户号</param>
+        /// <returns></returns>
+        public async Task CheckOrganization(string mid,string tid)
+        {
+            try
+            {
+                var model = ReadTXTModel();
+                if (string.IsNullOrWhiteSpace(model.Merid))
+                {
+                    var json = await Get(url + "/api/CheckLKL/POSCheck?merid="+ mid+ "&termid"+tid, "");
+                    var baseResult = JsonConvert.DeserializeObject<BaseResultInfo>(json);
+                    if (baseResult.ResultCode == 1)
+                    {
+                        var cjson = JsonConvert.SerializeObject(baseResult.Data);
+                        CreateTXT(cjson);
+                        this.RunOnUi(() =>
+                        {
+                            ShowToast("以校准组织机构");
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SendLog("验证组织机构出现异常mid="+ mid+"错误："+ ex.Message);
+            }
+        }
+        public async Task<Txndetail> Analysis(string json)
+        {
+            try
+            {
+                var model=JsonConvert.DeserializeObject<Txndetail>(json);
+                return model;
+            }
+            catch (Exception ex)
+            {
+                return new Txndetail();
             }
         }
         #endregion

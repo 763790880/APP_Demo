@@ -94,6 +94,8 @@ namespace App3
             {
                 var result = await Get(url + "/api/Orgnization/GetOrInvoice", "");//token.Token
                 var _engineerInfo = ByteToModel<Model.OrgnizationInfo>(result);
+                if (_engineerInfo.Data != null && _engineerInfo.Data.Count > 0)
+                    _engineerInfo.Data=_engineerInfo.Data.OrderBy(f=>f.OrgnizationName).ToList();
                 return _engineerInfo.Data;
             }
             catch (Exception ex)

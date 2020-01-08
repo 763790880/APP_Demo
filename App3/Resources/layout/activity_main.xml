@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/lADPDgQ9rMShv4_NBJDNAtA">
+    android:background="@drawable/zhuyemian">
     <Button
         android:text=""
         android:layout_width="149.0dp"
@@ -45,7 +45,7 @@
         android:minHeight="100px"
         android:layout_marginLeft="375px"
         android:layout_marginTop="850px"
-        android:background="@drawable/shezhi"
+        android:background="@drawable/qita"
         android:id="@+id/btnSetUpThe" />
 
 </RelativeLayout>

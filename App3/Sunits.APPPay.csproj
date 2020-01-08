@@ -84,6 +84,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Model\CashReceipts.cs" />
     <Compile Include="Model\DatabaseTXT.cs" />
+    <Compile Include="Model\BaseResultInfo.cs" />
     <Compile Include="Model\Engineer.cs" />
     <Compile Include="Model\EngineerInfo.cs" />
     <Compile Include="Model\Member.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Model\SalesOrderDetails.cs" />
     <Compile Include="Model\SalesOrderInfo.cs" />
     <Compile Include="Model\TokenInfo.cs" />
+    <Compile Include="Model\Txndetail.cs" />
     <Compile Include="Model\Users.cs" />
     <Compile Include="OrderList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -322,6 +324,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\saomiaotubiao.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\copy.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\chaxun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\mendianxuanze.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\qita.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\zhuyemian.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\kongbaizhuye.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -144,6 +144,7 @@ namespace App3
                         {
                             ManageRE(orderNO);
                         });
+                        //ShowActivity<MainActivity>();
                     }
                     catch (Exception ex)
                     {
@@ -177,6 +178,8 @@ namespace App3
                 var OrgnizationNumber = model.InvoiceCode;
                 var result = await Get(url + "/api/Orgnization/GetOrUser?OrgnizationNumber=" + OrgnizationNumber, "");//token.Token
                 var _engineerInfo = ByteToModel<Model.EngineerInfo>(result);
+                if (_engineerInfo.Data != null && _engineerInfo.Data.Count > 0)
+                    _engineerInfo.Data.Sort();
                 return _engineerInfo.Data;
             }
             catch (Exception ex)
@@ -206,9 +209,13 @@ namespace App3
                 base.OnActivityResult(requestCode, resultCode, data);
                 Bundle bundle = data.Extras;
                 var reason = bundle.GetString("reason");
-                SendLog("订单号：" + mhtOrderNo + "获取到参数，reason：" + reason);
+                string txndetail = bundle.GetString("txndetail");
+                if (!string.IsNullOrWhiteSpace(txndetail))
+                {
+                    var mmodel = Analysis(txndetail).Result;
+                    CheckOrganization(mmodel.merid, mmodel.termid);
+                }
                 var pay_tp = bundle.GetString("pay_tp");
-                SendLog("订单号：" + mhtOrderNo + "获取到参数，pay_tp：" + pay_tp);
                 SendLog("准备进入switch分支   requestCode：" + requestCode + "&时间=" + DateTime.Now.ToString());
                 switch (requestCode)
                 {

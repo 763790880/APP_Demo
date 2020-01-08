@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/lADPDgQ9rMShv4_NBJDNAtA">
+    android:background="@drawable/kongbaizhuye">
     <Button
         android:text=""
         android:layout_width="149.0dp"
@@ -12,9 +12,9 @@
         android:minWidth="100px"
         android:minHeight="100px"
         android:layout_marginLeft="375px"
-        android:layout_marginTop="680px"
-        android:background="@drawable/shuaka"
-        android:id="@+id/btnUnion" />
+        android:layout_marginTop="180px"
+        android:background="@drawable/tuikuan"
+        android:id="@+id/btnRefund" />
     <Button
         android:text=""
         android:layout_width="149.0dp"
@@ -22,7 +22,7 @@
         android:minWidth="100px"
         android:minHeight="100px"
         android:layout_marginLeft="47px"
-        android:layout_marginTop="680px"
+        android:layout_marginTop="180px"
         android:background="@drawable/saoma"
         android:id="@+id/btnScan" />
 
@@ -34,7 +34,7 @@
         android:minWidth="100px"
         android:minHeight="100px"
         android:layout_marginLeft="47px"
-        android:layout_marginTop="850px"
+        android:layout_marginTop="350px"
         android:background="@drawable/jiesuan"
         android:id="@+id/btnSettlement" />
     <Button
@@ -44,8 +44,8 @@
         android:minWidth="100px"
         android:minHeight="100px"
         android:layout_marginLeft="375px"
-        android:layout_marginTop="850px"
-        android:background="@drawable/shezhi"
+        android:layout_marginTop="350px"
+        android:background="@drawable/mendianxuanze"
         android:id="@+id/btnSetUpThe" />
 
 </RelativeLayout>

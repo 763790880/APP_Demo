@@ -82,7 +82,7 @@
             android:layout_height="fill_parent"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:backgroundTint="#01E5AB"
+            android:backgroundTint="#33ABA0"
             android:onClick="Cancel"
 
             android:id="@+id/cancel" />
@@ -90,7 +90,7 @@
             android:text="提交订单"
             android:layout_width="140dp"
             android:layout_height="fill_parent"
-            android:backgroundTint="#01E5AB"
+            android:backgroundTint="#33ABA0"
             android:id="@+id/subOrder"
             android:layout_alignParentRight="true" />
     </RelativeLayout>

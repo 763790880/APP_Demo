@@ -38,7 +38,7 @@
         android:layout_marginBottom="1.0dp"
         android:layout_weight="4">
         <TextView
-            android:text="客户名"
+            android:text="客户名称"
             android:layout_width="119.0dp"
             android:layout_height="55.5dp"
             android:minWidth="25px"
@@ -56,8 +56,9 @@
             android:layout_marginTop="15.0dp" />
         <Button
             android:text=""
-            android:layout_width="42.0dp"
-            android:layout_height="42.0dp"
+            android:layout_width="40.0dp"
+            android:layout_height="40.0dp"
+            android:layout_marginRight="7dp"
             android:background="@drawable/saomiaotubiao"
             android:layout_alignParentRight="true"
             android:id="@+id/butmember"
@@ -74,7 +75,7 @@
         android:layout_marginBottom="1.0dp"
         android:layout_weight="4">
         <TextView
-            android:text="联系人电话"
+            android:text="客户手机号"
             android:layout_width="119.0dp"
             android:layout_height="55.5dp"
             android:minWidth="25px"
@@ -128,6 +129,7 @@
             android:layout_height="59.5dp"
             android:minWidth="25px"
             android:minHeight="25px"
+            android:backgroundTint="#33ABA0"
             android:id="@+id/credateOrderScan"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true" />
@@ -135,6 +137,7 @@
             android:text="刷卡支付"
             android:layout_width="135.0dp"
             android:layout_height="59.5dp"
+            android:backgroundTint="#33ABA0"
             android:id="@+id/credateOrderUnion"
             android:layout_alignParentBottom="true" />
 

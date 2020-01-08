@@ -326,6 +326,12 @@ namespace App3
                 base.OnActivityResult(requestCode, resultCode, data);
                 Bundle bundle = data.Extras;
                 var reason = bundle.GetString("reason");
+                string txndetail = bundle.GetString("txndetail");
+                if (!string.IsNullOrWhiteSpace(txndetail))
+                {
+                    var mmodel = Analysis(txndetail).Result;
+                    CheckOrganization(mmodel.merid, mmodel.termid);
+                }
                 SendLog("订单号：" + mhtOrderNo + "获取到参数，reason：" + reason);
                 var pay_tp = bundle.GetString("pay_tp");
                 SendLog("订单号：" + mhtOrderNo + "获取到参数，pay_tp：" + pay_tp);

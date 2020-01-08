@@ -20,5 +20,7 @@ namespace App3.Model
         public int GroupID { get; set; }
         public string GroupCode { get; set; }
         public string GroupName { get; set; }
+        public string Merid { get; set; }
+        public string Termid { get; set; }
     }
 }

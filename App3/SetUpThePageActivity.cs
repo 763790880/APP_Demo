@@ -20,7 +20,7 @@ using ZXing.Mobile;
 namespace App3
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
-    public class SetUpThePageActivity:BaseActivity
+    public class SetUpThePageActivity : BaseActivity
     {
         #region 全局标量 
         protected View zxingOverlay;
@@ -74,6 +74,12 @@ namespace App3
                 base.OnActivityResult(requestCode, resultCode, data);
                 Bundle bundle = data.Extras;
                 var reason = bundle.GetString("reason");
+                string txndetail = bundle.GetString("txndetail");
+                if (!string.IsNullOrWhiteSpace(txndetail))
+                {
+                    var mmodel = Analysis(txndetail).Result;
+                    CheckOrganization(mmodel.merid, mmodel.termid);
+                }
                 SendLog("订单号：" + mhtOrderNo + "获取到参数，reason：" + reason);
                 var pay_tp = bundle.GetString("pay_tp");
                 SendLog("订单号：" + mhtOrderNo + "获取到参数，pay_tp：" + pay_tp);
@@ -322,8 +328,8 @@ namespace App3
             Button btnScan = this.FindViewById<Button>(Resource.Id.btnScan);
             btnScan.Click += (s, e) =>
             {
-                var str = ReadTXT();
-                this.ShowToast(str);
+                //var str = ReadTXT();
+                //this.ShowToast(str);
                 //var ddd=systemInf.SerialNo;
                 //InvokeRemoteService();
                 createFloatView();
@@ -333,16 +339,16 @@ namespace App3
                 Task t = new Task(AutoScan);
                 t.Start();
             };
-            //Button btnRefund = this.FindControl<Button>("btnRefund");//退款
-            //btnRefund.Click += (s, e) =>
-            //{
-            //    createFloatView();
-            //    textPrompt.Text = "退款扫描，请将销售订单二维码放入框内";
-            //    _scanType = 2;//扫描类型
-            //    //AutoScan();
-            //    Task t = new Task(AutoScan);
-            //    t.Start();
-            //};
+            Button btnRefund = this.FindControl<Button>("btnRefund");//退款
+            btnRefund.Click += (s, e) =>
+            {
+                createFloatView();
+                textPrompt.Text = "退款扫描，请将销售订单二维码放入框内";
+                _scanType = 2;//扫描类型
+                //AutoScan();
+                Task t = new Task(AutoScan);
+                t.Start();
+            };
             Button btnSettlement = this.FindViewById<Button>(Resource.Id.btnSettlement);//结算
             btnSettlement.Click += (s, e) =>
             {
@@ -362,7 +368,17 @@ namespace App3
             button1.Click += (s, e) =>
             {
                 createFloatView();
+                //var json = ReadTXT();
+                //if(string.IsNullOrWhiteSpace(json))
                 ShowActivity<SetUpTheActivity>();
+                //else
+                //    this.RunOnUi(() =>
+                //    {
+                //        this.ShowAlert("您已经设置过，无需再次设置", false, (d) =>
+                //        {
+                //            Close();
+                //        });
+                //    });
             };
         }
         /// <summary>
@@ -466,206 +482,59 @@ namespace App3
 
         }
         #endregion
-        #region 创建订单
-        private List<SalesOrderDetails> OrderDetails = new List<SalesOrderDetails>();
-        private MobileBarcodeScanner scanorder;
-        public void CreateOrderScan()
+        #region 身份识别-模拟请求  获取商户号
+        public void Authentication()
         {
-            var b = Check();
-            if (!b)
-                return;
             try
             {
-                var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
-                scanorder = new MobileBarcodeScanner();
-                scanorder.UseCustomOverlay = true;
-                createOrder.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
-                Button btnCancelScan = createOrder.FindViewById<Button>(Resource.Id.cancel);//取消扫描
-                btnCancelScan.Click += (s, e) =>
-                {
-                    if (scanorder != null)
-                    {
-                        //orders.Clear();
-                        //OrderDetails.Clear();
-                        this.RunOnUi(() =>
-                        {
-                            ShowActivity<MainActivity>();
-                        });
-                    }
-                };
-                Button btnSubOrder = createOrder.FindViewById<Button>(Resource.Id.subOrder);//提交订单
-                btnSubOrder.Click += (s, e) =>
-                {
-                    if (scanorder != null)
-                    {
-                        if (OrderDetails.Count > 0)
-                        {
-                            this.RunOnUi(() =>
-                            {
-                                OpenOrder();
-                            });
-                        }
-                        else
-                        {
-                            this.RunOnUi(() =>
-                            {
-                                ShowToast("当前没有物料");
-                            });
-                        }
-
-                    }
-                };
-                scanorder.CustomOverlay = createOrder;
-                var ivScanningorder = createOrder.FindViewById<ImageView>(Resource.Id.ivScanning);
-                CreteView(createOrder);
-                // 从上到下的平移动画
-                var verticalAnimationOrder = new TranslateAnimation(0, 0, 0, 800)
-                {
-                    Duration = 3000, // 动画持续时间
-                    RepeatCount = Animation.Infinite // 无限循环
-                };
-                verticalAnimationOrder.StartNow();
-                // 播放动画
-                ivScanningorder.Animation = verticalAnimationOrder;
-                var result = scanorder.Scan(this, mbs).Result;
-                DisplayCamera().Wait();
-                scanorder = null;
-                AddList(result);
+                SendLog("开始查询余额!&时间=" + DateTime.Now.ToString());
+                Intent intent = new Intent();
+                intent.SetComponent(componet);
+                Bundle bundle = new Bundle();
+                bundle.PutString("msg_tp", "0300");
+                bundle.PutString("pay_tp", "0");
+                bundle.PutString("proc_cd", "030000");
+                bundle.PutString("appid", "com.companyname.sunits.pay");
+                SendLog("准备进入查询接口：bundle" + JsonConvert.SerializeObject(bundle) + "&时间=" + DateTime.Now.ToString());
+                intent.PutExtras(bundle);
+                this.StartActivityForResult(intent, 4);
             }
             catch (Exception ex)
             {
-                SendLog("创建扫描对象出现异常" + ex.Message);
+                SendLog("查询余额出现异常！" + ex.Message);
                 this.RunOnUi(() =>
                 {
-                    this.ShowAlert("创建扫描对象出现异常-请联系管理员", false, (d) =>
+                    this.ShowAlert("身份验证出现异常-请联系管理员", false, (d) =>
                     {
                         Close();
                     });
                 });
             }
         }
-        public void CreteView(View view)
+        async Task SaveUser(string merid)
         {
-
-
-            //var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
-
-            //var orderNumber = view.FindViewById<TextView>(Resource.Id.orderNumber);
-            if (orders != null && orders.Count > 0)
-            {
-                var recyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
-                var adapter = new RecyclerViewAdapter(OrderDetails, this);
-                recyclerView.SetLayoutManager(new LinearLayoutManager(this));
-                recyclerView.AddItemDecoration(new Comment.MyItemDecoration(this, (int)Orientation.Vertical));
-                recyclerView.SetAdapter(adapter);
-                //TextView baseView = view.FindViewById<TextView>(Resource.Id.baseView);
-                //gridview.RemoveView(baseView);
-                //foreach (var item in orders)
-                //{
-                //    TextView text = new TextView(this);
-                //    text.TextSize = 20;
-                //    text.SetPadding(8, 8, 8, 8);
-                //    text.Text = item;
-                //    gridview.AddView(text);
-                //}
-                //orderNumber.Text = orders.Count.ToString();
-                //TableRow tableRow = new TableRow(this);
-                //tableRow.Left
-            }
-        }
-        public void AddList(ZXing.Result result)
-        {
-            //震动
-            Vibrator vibrator = (Vibrator)Application.Context.GetSystemService(Context.VibratorService);
-            long[] pattern = { 0, 350, 220, 350 };
-            vibrator.Vibrate(pattern, -1);
-            var bf = true;
-            if (result == null)
-                bf = false;
-            if (result != null && !string.IsNullOrWhiteSpace(result.Text))
-            {
-                if (orders.Contains(result.Text))
-                    bf = false;
-                var b = AddOrders(result.Text);
-                if (!b.Result)
-                    bf = false;
-                if (bf)
-                {
-                    string orderDetails = result.Text;
-                    orders.Add(orderDetails);
-                    this.RunOnUi(() =>
-                    {
-                        ShowToast("添加成功");
-                    });
-                }
-                CreateOrderScan();
-            }
-        }
-        private async Task<bool> AddOrders(string Barcode)
-        {
-            try
-            {
-                var result = Get(url + "/api/Material/GetMateriaBarcode?Barcode=" + Barcode + "&sysKey=" + SYSKEY, "");//token.Token
-                var _salesOrderDetails = ByteToModel<SalesOrderDetailInfo>(result.Result);
-                if (_salesOrderDetails.ResultCode == 1)
-                {
-                    foreach (var item in OrderDetails)
-                    {
-                        if (item.Barcode.Contains(_salesOrderDetails.Data.Barcode))
-                        {
-                            this.RunOnUi(() =>
-                            {
-                                ShowToast("此条码已存在");
-                            });
-                            return false;
-                        }
-                    }
-                    OrderDetails.Add(_salesOrderDetails.Data);
-                    return true;
-                }
-                else
-                {
-                    this.RunOnUi(() =>
-                    {
-                        ShowToast("未找到此条码");
-                    });
-                    return false;
-                }
-            }
-            catch (Exception ex)
+            Model.DatabaseTXT databaseTXT = new Model.DatabaseTXT();
+            string json = await Get(url + "", "");
+            var model=JsonConvert.DeserializeObject<DatabaseTXT>(json);
+            model.Merid = merid;
+            var txt=JsonConvert.SerializeObject(model);
+            var b = CreateTXT(txt);
+            if (b)
             {
                 this.RunOnUi(() =>
                 {
-                    ShowToast("未找到此条码");
+                    //ShowToast("设置成功");
+                    ShowActivity<MainActivity>();
                 });
-                SendLog("提交订单，根据条码获取数据：条码=" + Barcode + "!!发生异常");
-                return false;
-            }
 
-        }
-        private void OpenOrder()
-        {
-            Intent intent = new Intent(this, typeof(OrderList));
-            var objval = JsonConvert.SerializeObject(OrderDetails);
-            //orders.Clear();
-            //OrderDetails.Clear();
-            intent.PutExtra("obj", objval);
-            StartActivity(intent);
-        }
-        /// <summary>
-        /// 
-        /// 页面得click事件  直接标注方法名
-        /// </summary>
-        /// <param name="v"></param>
-        [Java.Interop.Export("Cancel")]
-        public void Cancel(View v)
-        {
-            Button button = (v as Button);
-            var val = button.Text;
-            this.RunOnUi(() =>
+            }
+            else
             {
-                ShowToast("取消取消取消89" + val);
-            });
+                this.RunOnUi(() =>
+                {
+                    ShowToast("设置失败");
+                });
+            }
         }
         #endregion
     }
