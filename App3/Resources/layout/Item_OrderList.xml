@@ -22,16 +22,17 @@
             android:lineHeight="19sp"
             android:text="CRU,适配器,90W,100-240Vac,3Pin(7648375)\n1A6B600001001"
             android:layout_marginTop="5.0dp" />
-        <TextView
+        <EditText
             android:id="@+id/orderPrice"
             android:layout_width="match_parent"
+            android:inputType="numberDecimal"
             android:layout_height="40dp"
             android:paddingTop="15dp"
+            android:background="#00000000"
             android:textSize="16sp"
             android:textColor="#000000"
             android:gravity="right"
-            android:text="65￥"/>
-
+            android:text="65"/>
     </RelativeLayout>
 
 </LinearLayout>

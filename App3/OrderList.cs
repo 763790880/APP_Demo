@@ -59,6 +59,7 @@ namespace App3
             price.Text = "金额：" + salesOrderDetails.Sum(f=>f.Money);
             recyclerView = FindViewById<RecyclerView>(Resource.Id.recyclerView);
             adapter = new RecyclerViewAdapter(salesOrderDetails, this);
+            adapter.SetContext(price);
             recyclerView.SetLayoutManager(new LinearLayoutManager(this));
             recyclerView.AddItemDecoration(new MyItemDecoration(this, (int)Orientation.Vertical));
             recyclerView.SetAdapter(adapter);
@@ -173,6 +174,7 @@ namespace App3
         public void CredateOrder()
         {
             createFloatView();
+            salesOrderDetails = adapter.GetData;//数量级转换为条码级
             if (!string.IsNullOrWhiteSpace(orderSO))
             {
                 ManageSO(orderSO);
@@ -186,6 +188,7 @@ namespace App3
             #region 创建销售单json
             try
             {
+             
                 var time = DateTime.Now;
                 MSalesViews mSalesViews = new MSalesViews();
                 mSalesViews.sysKey = SYSKEY;

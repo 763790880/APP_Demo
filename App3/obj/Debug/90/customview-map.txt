@@ -21,6 +21,7 @@ corners;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\drawa
 corners;obj\Debug\90\res\drawable\corners_bg.xml
 declare-styleable;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\1\jl\res\values\attrs.xml
 EditText;obj\Debug\90\res\layout\cashreceipts.xml
+EditText;obj\Debug\90\res\layout\item_orderlist.xml
 EditText;obj\Debug\90\res\layout\orderlist.xml
 external-cache-path;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\42\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml
 external-path;C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\lp\42\jl\res\xml\xamarin_essentials_fileprovider_file_paths.xml

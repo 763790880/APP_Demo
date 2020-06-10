@@ -763,3 +763,4 @@ C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\mendianxuanz
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\qita.png
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\zhuyemian.jpg
 C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\res\drawable\kongbaizhuye.jpg
+C:\Users\Sunits\Desktop\第一个app\App3\obj\Debug\90\android\src\md548a6724d25ca3fee3c133aaf3c748cae\Notify_Adapter.java

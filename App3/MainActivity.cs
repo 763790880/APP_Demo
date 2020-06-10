@@ -24,7 +24,7 @@ using Android.Hardware.Camera2;
 namespace App3
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : BaseActivity //AppCompatActivity  之前引用
+    public class MainActivity : BaseActivity, View.IOnTouchListener //AppCompatActivity  之前引用
     {
 
         #region 全局标量 
@@ -566,6 +566,7 @@ namespace App3
         #region 创建订单
         private List<SalesOrderDetails> OrderDetails = new List<SalesOrderDetails>();
         private MobileBarcodeScanner scanorder;
+        private RecyclerViewAdapter adapter;
         public void CreateOrderScan()
         {
             var b=Check();
@@ -577,6 +578,8 @@ namespace App3
                 scanorder = new MobileBarcodeScanner();
                 scanorder.UseCustomOverlay = true;
                 createOrder.Measure(MeasureSpecMode.Unspecified.GetHashCode(), MeasureSpecMode.Unspecified.GetHashCode());
+                CreteView(createOrder);
+      
                 Button btnCancelScan = createOrder.FindViewById<Button>(Resource.Id.cancel);//取消扫描
                 btnCancelScan.Click += (s, e) =>
                 {
@@ -614,8 +617,6 @@ namespace App3
                 };
                 scanorder.CustomOverlay = createOrder;
                 var ivScanningorder = createOrder.FindViewById<ImageView>(Resource.Id.ivScanning);
-                CreteView(createOrder);
-                //new rect
                 // 从上到下的平移动画
                 var verticalAnimationOrder = new TranslateAnimation(0, 0, 0, 800)
                 {
@@ -647,6 +648,7 @@ namespace App3
                 });
             }
         }
+
         public void CreteView(View view)
         {
 
@@ -654,11 +656,12 @@ namespace App3
             //var createOrder = LayoutInflater.FromContext(this).Inflate(Resource.Layout.CreateOrder, null);
 
             //var orderNumber = view.FindViewById<TextView>(Resource.Id.orderNumber);
-            if (orders!=null&& orders.Count>0)
-            {
+            //if (orders!=null&& orders.Count>0)
+            //{
                 var recyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
-                var adapter = new RecyclerViewAdapter(OrderDetails, this);
+                adapter = new RecyclerViewAdapter(OrderDetails, this);
                 recyclerView.SetLayoutManager(new LinearLayoutManager(this));
+                recyclerView.SetItemAnimator(new DefaultItemAnimator());
                 recyclerView.AddItemDecoration(new Comment.MyItemDecoration(this, (int)Orientation.Vertical));
                 recyclerView.SetAdapter(adapter);
                 //TextView baseView = view.FindViewById<TextView>(Resource.Id.baseView);
@@ -674,7 +677,7 @@ namespace App3
                 //orderNumber.Text = orders.Count.ToString();
                 //TableRow tableRow = new TableRow(this);
                 //tableRow.Left
-            }
+            //}
         }
         public void AddList(ZXing.Result result)
         {
@@ -696,6 +699,8 @@ namespace App3
                 { 
                     string orderDetails = result.Text;
                     orders.Add(orderDetails);
+                    //adapter.NotifyDataSetChanged();
+                    
                     this.RunOnUi(() =>
                     {
                         ShowToast("添加成功");
@@ -751,6 +756,7 @@ namespace App3
         private void OpenOrder()
         {
             Intent intent = new Intent(this, typeof(OrderList));
+            OrderDetails = adapter.GetData;
             var objval = JsonConvert.SerializeObject(OrderDetails);
             //orders.Clear();
             //OrderDetails.Clear();
@@ -771,6 +777,11 @@ namespace App3
             {
                 ShowToast("取消取消取消89"+ val);
             });
+        }
+
+        public bool OnTouch(View v, MotionEvent e)
+        {
+            return false;
         }
         #endregion
     }

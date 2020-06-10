@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#ADADAD"
+    android:background="#E5E5E5"
     android:layout_height="match_parent">
     <RelativeLayout
         android:background="#F5F5F5"
@@ -119,7 +119,7 @@
             android:layout_marginTop="17.0dp" />
     </RelativeLayout>
     <RelativeLayout
-        android:background="#ADADAD"
+        android:background="#E5E5E5"
         android:layout_width="fill_parent"
         android:layout_height="243.5dp"
         android:layout_weight="4">
@@ -129,15 +129,17 @@
             android:layout_height="59.5dp"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:backgroundTint="#33ABA0"
+            android:backgroundTint="#27B195"
+            android:textColor="#E5E5E5"
             android:id="@+id/credateOrderScan"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true" />
         <Button
             android:text="刷卡支付"
+            android:textColor="#E5E5E5"
             android:layout_width="135.0dp"
             android:layout_height="59.5dp"
-            android:backgroundTint="#33ABA0"
+            android:backgroundTint="#27B195"
             android:id="@+id/credateOrderUnion"
             android:layout_alignParentBottom="true" />
 

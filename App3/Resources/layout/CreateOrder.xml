@@ -11,7 +11,7 @@
         android:layout_height="222.5dp"
         android:orientation="horizontal">
         <RelativeLayout
-            android:background="#aa000000"
+            android:background="#E5E5E5"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
@@ -52,7 +52,7 @@
                 android:src="@drawable/area_below_right" />
         </RelativeLayout>
         <RelativeLayout
-            android:background="#aa000000"
+            android:background="#E5E5E5"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1" />
@@ -67,11 +67,11 @@
             android:layout_width="match_parent"
             android:layout_height="498.0dp"
             android:divider="#FF00"
-            android:background="#ADADAD"
+            android:background="#E5E5E5"
             android:dividerHeight="5dp" />
     </RelativeLayout>
     <RelativeLayout
-        android:background="#ADADAD"
+        android:background="#E5E5E5"
         android:layout_width="fill_parent"
         android:layout_height="272dp"
         
@@ -82,7 +82,8 @@
             android:layout_height="fill_parent"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:backgroundTint="#33ABA0"
+                android:backgroundTint="#27B195"
+            android:textColor="#E5E5E5"
             android:onClick="Cancel"
 
             android:id="@+id/cancel" />
@@ -90,7 +91,8 @@
             android:text="提交订单"
             android:layout_width="140dp"
             android:layout_height="fill_parent"
-            android:backgroundTint="#33ABA0"
+                android:backgroundTint="#27B195"
+            android:textColor="#E5E5E5"
             android:id="@+id/subOrder"
             android:layout_alignParentRight="true" />
     </RelativeLayout>

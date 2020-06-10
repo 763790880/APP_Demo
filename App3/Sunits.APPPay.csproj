@@ -74,6 +74,7 @@
     <Compile Include="CashReceiptsActivity.cs" />
     <Compile Include="Comment\GetData.cs" />
     <Compile Include="Comment\MyItemDecoration.cs" />
+    <Compile Include="Comment\Notify_Adapter.cs" />
     <Compile Include="Comment\ObjectTypeHelper.cs" />
     <Compile Include="Comment\OrderAdapter.cs" />
     <Compile Include="Comment\ScanBase.cs" />
